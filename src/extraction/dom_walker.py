@@ -14,9 +14,7 @@ logger = logging.getLogger(__name__)
 class TextSection:
     """Represents a section of text with metadata about its structure."""
 
-    def __init__(
-        self, text: str, element: Optional[Tag] = None, level: int = 0, is_heading: bool = False
-    ):
+    def __init__(self, text: str, element: Optional[Tag] = None, level: int = 0, is_heading: bool = False):
         """Initialize a text section.
 
         Args:
@@ -31,9 +29,7 @@ class TextSection:
         self.is_heading = is_heading
 
     def __repr__(self) -> str:
-        return (
-            f"TextSection(text={self.text[:50]!r}, level={self.level}, heading={self.is_heading})"
-        )
+        return f"TextSection(text={self.text[:50]!r}, level={self.level}, heading={self.is_heading})"
 
 
 def walk_dom(soup: Tag, preserve_structure: bool = True) -> List[str]:
@@ -97,9 +93,7 @@ def _walk_element(element: Tag, sections: List[TextSection], depth: int = 0) -> 
         heading_text = _get_element_text(element)
         if heading_text:
             level = heading_levels[element.name]
-            sections.append(
-                TextSection(heading_text, element=element, level=level, is_heading=True)
-            )
+            sections.append(TextSection(heading_text, element=element, level=level, is_heading=True))
     elif is_container:
         # Block element - create a new section
         text_parts = []

@@ -178,9 +178,7 @@ class ConcreteTextExtractor(TextExtractor):
         except ExtractionError:
             raise
         except Exception as e:
-            raise ExtractionError(
-                f"Failed to extract text from tab {tab_info.tab_id}: {str(e)}"
-            ) from e
+            raise ExtractionError(f"Failed to extract text from tab {tab_info.tab_id}: {str(e)}") from e
 
     def extract_from_tab_id(self, tab_id: str) -> str:
         """Extract text from a tab by tab_id.

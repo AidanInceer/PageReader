@@ -28,10 +28,7 @@ class TabInfo:
 
     def __repr__(self) -> str:
         """Detailed representation of tab info."""
-        return (
-            f"TabInfo(browser={self.browser_name}, tab_id={self.tab_id}, "
-            f"title={self.title!r}, url={self.url!r})"
-        )
+        return f"TabInfo(browser={self.browser_name}, tab_id={self.tab_id}, title={self.title!r}, url={self.url!r})"
 
     def is_valid(self) -> bool:
         """Check if tab info is valid (has required fields).

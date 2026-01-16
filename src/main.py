@@ -70,12 +70,8 @@ def create_parser() -> argparse.ArgumentParser:
     read_group = read_parser.add_mutually_exclusive_group(required=True)
     read_group.add_argument("--tab", metavar="TAB_ID", help="Read a specific browser tab by ID")
     read_group.add_argument("--url", metavar="URL", help="Read content from a URL")
-    read_group.add_argument(
-        "--file", metavar="FILE_PATH", help="Read content from a local HTML file"
-    )
-    read_group.add_argument(
-        "--active", action="store_true", help="Read the currently active browser tab"
-    )
+    read_group.add_argument("--file", metavar="FILE_PATH", help="Read content from a local HTML file")
+    read_group.add_argument("--active", action="store_true", help="Read the currently active browser tab")
 
     # TTS options
     read_parser.add_argument(
@@ -83,15 +79,9 @@ def create_parser() -> argparse.ArgumentParser:
         default="en_US-libritts-high",
         help="Voice to use for synthesis (default: en_US-libritts-high)",
     )
-    read_parser.add_argument(
-        "--speed", type=float, default=1.0, help="Speech speed (0.5-2.0, default: 1.0)"
-    )
-    read_parser.add_argument(
-        "--no-play", action="store_true", help="Generate audio but do not play it"
-    )
-    read_parser.add_argument(
-        "--output", metavar="FILE", help="Save audio to a file instead of playing"
-    )
+    read_parser.add_argument("--speed", type=float, default=1.0, help="Speech speed (0.5-2.0, default: 1.0)")
+    read_parser.add_argument("--no-play", action="store_true", help="Generate audio but do not play it")
+    read_parser.add_argument("--output", metavar="FILE", help="Save audio to a file instead of playing")
 
     # LIST command
     list_parser = subparsers.add_parser("list", help="List available items")

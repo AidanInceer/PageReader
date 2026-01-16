@@ -67,9 +67,7 @@ def get_window_text(window_handle: int) -> str:
         return ""
 
     except Exception as e:
-        raise BrowserDetectionError(
-            f"Failed to get window text for handle {window_handle}: {e}"
-        ) from e
+        raise BrowserDetectionError(f"Failed to get window text for handle {window_handle}: {e}") from e
 
 
 def _detect_via_ui_automation(browser_name: str) -> List[TabInfo]:
@@ -230,9 +228,7 @@ def _detect_via_window_enum(browser_name: str) -> List[TabInfo]:
                 # Check if window belongs to this browser
                 if any(kw.lower() in title.lower() for kw in keywords):
                     # Skip developer tools and other non-tab windows
-                    if not any(
-                        skip in title.lower() for skip in ["devtools", "extensions", "about:blank"]
-                    ):
+                    if not any(skip in title.lower() for skip in ["devtools", "extensions", "about:blank"]):
                         # Create TabInfo from window
                         tab = _parse_tab_from_window(window, browser_name)
                         if tab and tab.is_valid():

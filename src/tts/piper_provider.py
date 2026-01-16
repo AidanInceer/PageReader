@@ -157,7 +157,9 @@ def _ensure_model_available(voice: str) -> None:
         logger.info(f"Downloading Piper model: {voice}")
 
         # Download model and config from Piper repository
-        model_url = f"https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts/high/en_US-libritts-high.onnx"
+        model_url = (
+            f"https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts/high/en_US-libritts-high.onnx"
+        )
         config_url = f"https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts/high/en_US-libritts-high.onnx.json"
 
         # Note: This is simplified; real implementation would handle all voices

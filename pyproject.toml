@@ -46,7 +46,7 @@ Documentation = "https://github.com/your-username/PageReader/blob/main/README.md
 Issues = "https://github.com/your-username/PageReader/issues"
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 target-version = "py313"
 exclude = [
     "tests/",

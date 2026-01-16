@@ -171,10 +171,7 @@ def _detect_tabs_by_window_title(browser_name: str, process_names: List[str]) ->
                             title = window.window_text()
 
                             # Skip window if it's not a tab (e.g., extensions, developer tools)
-                            if title and not any(
-                                skip in title.lower()
-                                for skip in ["extensions", "devtools", "about"]
-                            ):
+                            if title and not any(skip in title.lower() for skip in ["extensions", "devtools", "about"]):
                                 # Parse tab info from window title
                                 tab = _parse_tab_from_title(browser_name, title, window.handle)
                                 if tab and tab.is_valid():

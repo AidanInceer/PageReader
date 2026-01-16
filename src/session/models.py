@@ -81,9 +81,7 @@ class ReadingSession:
             title=data["title"],
             playback_position=data.get("playback_position", 0),
             created_at=datetime.fromisoformat(data.get("created_at", datetime.now().isoformat())),
-            last_accessed=datetime.fromisoformat(
-                data.get("last_accessed", datetime.now().isoformat())
-            ),
+            last_accessed=datetime.fromisoformat(data.get("last_accessed", datetime.now().isoformat())),
             extraction_settings=data.get("extraction_settings", {}),
             tts_settings=data.get("tts_settings", {}),
         )

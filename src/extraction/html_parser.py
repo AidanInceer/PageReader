@@ -74,8 +74,7 @@ def clean_html(soup: BeautifulSoup) -> BeautifulSoup:
     }
 
     for tag in soup.find_all(
-        class_=lambda x: x
-        and any(cls in (x.lower() if isinstance(x, str) else "") for cls in remove_classes)
+        class_=lambda x: x and any(cls in (x.lower() if isinstance(x, str) else "") for cls in remove_classes)
     ):
         tag.decompose()
 

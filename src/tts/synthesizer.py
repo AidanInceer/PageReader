@@ -161,10 +161,7 @@ class PiperSynthesizer(Synthesizer):
             TTSError: If voice is not available
         """
         if voice not in self._available_voices:
-            raise TTSError(
-                f"Voice '{voice}' not available. "
-                f"Available: {', '.join(self._available_voices[:3])}..."
-            )
+            raise TTSError(f"Voice '{voice}' not available. Available: {', '.join(self._available_voices[:3])}...")
 
         self.voice = voice
         logger.info(f"Voice set to {voice}")
