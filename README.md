@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="imgs/logo.png" alt="PageReader Logo" width="200" />
+</div>
+
 # PageReader: Desktop Text-to-Speech Browser Integration
 
 ## Overview
@@ -80,108 +84,6 @@ PageReader/
 └── .github/
     └── workflows/            # GitHub Actions CI/CD
 ```
-
-### Running Tests
-
-```bash
-# Run all tests with coverage
-pytest
-
-# Run specific test suite
-pytest tests/unit/             # Unit tests only
-pytest tests/integration/      # Integration tests only
-
-# Run with specific markers
-pytest -m unit                 # Only unit-marked tests
-pytest -m integration          # Only integration-marked tests
-
-# Run with verbose output
-pytest -v
-
-# Run with detailed coverage report
-pytest --cov=src --cov-report=html
-```
-
-### Code Quality
-
-The project enforces code quality standards using:
-
-- **ruff**: Fast Python linter and formatter (PEP 8 compliance)
-- **pytest**: Testing framework with >80% coverage requirement
-- **pre-commit hooks**: Automated formatting on every commit
-
-#### Setting Up Pre-Commit Hooks
-
-```bash
-# Install pre-commit hooks (runs on every git commit)
-pre-commit install
-
-# Manually run pre-commit checks
-pre-commit run --all-files
-
-# Run ruff linting
-ruff check src/
-
-# Run ruff formatting
-ruff format src/ tests/
-```
-
-#### CI/CD Pipeline
-
-GitHub Actions automatically:
-- Runs ruff linting on every PR
-- Runs full test suite with coverage reporting
-- Enforces ≥80% test coverage gate
-- Requires all checks to pass before merge
-
-Branch protection rules require:
-- All GitHub Actions checks passing
-- At least 1 code review approval
-
-### Development Workflow
-
-1. **Create a feature branch**
-   ```bash
-   git checkout -b feature/new-feature
-   ```
-
-2. **Write tests first** (Test-First Development)
-   ```bash
-   # Create test file in tests/ with failing test
-   vim tests/unit/test_new_feature.py
-   pytest tests/unit/test_new_feature.py  # Should FAIL
-   ```
-
-3. **Implement feature**
-   ```bash
-   # Write implementation to make tests pass
-   vim src/module/new_feature.py
-   pytest tests/unit/test_new_feature.py  # Should PASS
-   ```
-
-4. **Verify code quality**
-   ```bash
-   pytest --cov=src              # Coverage check (≥80% required)
-   ruff check src/               # Linting check
-   ruff format src/ tests/       # Auto-formatting
-   ```
-
-5. **Pre-commit hooks** (automatic on commit)
-   ```bash
-   git add .
-   git commit -m "feat: add new feature"  # Pre-commit runs ruff format
-   ```
-
-6. **Push and create PR**
-   ```bash
-   git push origin feature/new-feature
-   ```
-
-7. **GitHub Actions validates**
-   - Ruff lint check
-   - Full test suite with coverage
-   - Coverage gate enforcement
-   - All must pass before merge
 
 ## Architecture & Design
 

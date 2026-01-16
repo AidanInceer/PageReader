@@ -5,7 +5,7 @@ readable text while preserving reading order and structure.
 """
 
 import pytest
-from src.extraction.text_extractor import TextExtractor
+from src.extraction.text_extractor import ConcreteTextExtractor
 from src.utils.errors import ExtractionError
 
 
@@ -24,7 +24,7 @@ class TestHTMLExtraction:
         """
         
         # This test assumes extract_html method exists on TextExtractor
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         assert text is not None
@@ -47,7 +47,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         # Should normalize whitespace
@@ -71,7 +71,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         # Verify reading order is preserved (using string positions)
@@ -119,7 +119,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         # Verify key content is extracted
@@ -143,7 +143,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         assert 'English' in text
@@ -166,7 +166,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         assert 'Main Content' in text
@@ -191,7 +191,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         assert 'Title' in text
@@ -214,7 +214,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         # All paragraphs should be present and distinguishable
@@ -236,7 +236,7 @@ class TestHTMLExtraction:
         </html>
         """
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         assert 'Article with Data' in text
@@ -250,7 +250,7 @@ class TestExtractionErrors:
 
     def test_extract_empty_html(self):
         """Handle empty HTML gracefully."""
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html("")
         
         assert text is not None
@@ -260,7 +260,7 @@ class TestExtractionErrors:
         """Handle malformed HTML gracefully (BeautifulSoup is forgiving)."""
         html = "<p>Unclosed paragraph<div>Nested unclosed</div>"
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(html)
         
         # BeautifulSoup should still extract text despite malformed HTML
@@ -274,7 +274,7 @@ class TestExtractionErrors:
             large_html += f"<p>Paragraph {i}: This is test content {i}</p>"
         large_html += "</body></html>"
         
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         text = extractor.extract_html(large_html)
         
         # Should extract without error
@@ -288,13 +288,13 @@ class TestTextExtractorInterface:
 
     def test_extractor_implements_extract_method(self):
         """TextExtractor should have extract_html method."""
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         assert hasattr(extractor, 'extract_html')
         assert callable(extractor.extract_html)
 
     def test_extractor_returns_string(self):
         """extract_html should always return a string."""
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         html = "<p>Test</p>"
         result = extractor.extract_html(html)
         
@@ -302,13 +302,13 @@ class TestTextExtractorInterface:
 
     def test_supports_method_exists(self):
         """TextExtractor should have supports method."""
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         assert hasattr(extractor, 'supports')
         assert callable(extractor.supports)
 
     def test_supports_html_type(self):
         """Extractor should support HTML source type."""
-        extractor = TextExtractor()
+        extractor = ConcreteTextExtractor()
         # Should return True for HTML
         supports_html = extractor.supports('html')
         assert supports_html is True

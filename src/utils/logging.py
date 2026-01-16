@@ -13,10 +13,10 @@ class ColoredFormatter(logging.Formatter):
 
     COLORS = {
         "DEBUG": "\033[36m",  # Cyan
-        "INFO": "\033[32m",   # Green
-        "WARNING": "\033[33m", # Yellow
+        "INFO": "\033[32m",  # Green
+        "WARNING": "\033[33m",  # Yellow
         "ERROR": "\033[31m",  # Red
-        "CRITICAL": "\033[35m", # Magenta
+        "CRITICAL": "\033[35m",  # Magenta
     }
     RESET = "\033[0m"
 
@@ -35,7 +35,7 @@ def setup_logging(
     enable_file: bool = True,
 ) -> logging.Logger:
     """Configure logging for PageReader application.
-    
+
     Args:
         name: Logger name (usually module name or "pagereader" for root)
         level: Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL).
@@ -43,53 +43,53 @@ def setup_logging(
         log_file: Path to log file. If None, uses config.LOGS_DIR / f"{name}.log"
         enable_console: Whether to add console handler
         enable_file: Whether to add file handler
-        
+
     Returns:
         Configured logger instance
     """
     logger = logging.getLogger(name)
-    
+
     # Set log level
     if level is None:
         level = config.LOG_LEVEL
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))
-    
+
     # Remove existing handlers to avoid duplicates
     logger.handlers.clear()
-    
+
     # Console handler
     if enable_console:
         console_handler = logging.StreamHandler()
         console_handler.setLevel(getattr(logging, level.upper(), logging.INFO))
-        
+
         # Use colored formatter for console
         formatter = ColoredFormatter(config.LOG_FORMAT)
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
-    
+
     # File handler
     if enable_file:
         if log_file is None:
             log_file = config.LOGS_DIR / f"{name}.log"
-        
+
         log_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         file_handler = logging.handlers.RotatingFileHandler(
             log_file,
             maxBytes=config.LOG_FILE_SIZE_MB * 1024 * 1024,
             backupCount=config.LOG_BACKUP_COUNT,
         )
         file_handler.setLevel(getattr(logging, level.upper(), logging.INFO))
-        
+
         # Use standard formatter for file (no colors)
         formatter = logging.Formatter(config.LOG_FORMAT)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-    
+
     # Prevent propagation to avoid duplicate logs
     if name != "pagereader":
         logger.propagate = False
-    
+
     return logger
 
 
@@ -99,10 +99,10 @@ _root_logger = setup_logging("pagereader")
 
 def get_logger(name: str) -> logging.Logger:
     """Get or create a logger for a module.
-    
+
     Args:
         name: Module name (typically __name__)
-        
+
     Returns:
         Logger instance for the module
     """

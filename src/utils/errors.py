@@ -6,7 +6,7 @@ class PageReaderException(Exception):
 
     def __init__(self, message: str, error_code: str = None, context: dict = None):
         """Initialize exception with message, error code, and optional context.
-        
+
         Args:
             message: Human-readable error message
             error_code: Machine-readable error code (e.g., "TAB_NOT_FOUND")

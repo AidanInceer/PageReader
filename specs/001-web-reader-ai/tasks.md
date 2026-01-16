@@ -63,25 +63,25 @@ description: "Task breakdown for Web Reader AI feature implementation"
 
 > **WRITE THESE TESTS FIRST, ensure they FAIL before implementation**
 
-- [ ] T014 [P] [US1] Create tests/unit/test_browser_detector.py with test cases:
+- [x] T014 [P] [US1] Create tests/unit/test_browser_detector.py with test cases:
   - test_detect_chrome_tabs() - Mock Chrome process, verify >=1 tab detected with title/url
   - test_detect_edge_tabs() - Mock Edge process, verify tabs detected
   - test_detect_firefox_tabs() - Mock Firefox process, verify tabs detected
   - test_tab_detect_inactive_tabs() - Verify inactive background tabs are detected (core US1 requirement)
   - test_detect_all_browsers_simultaneously() - Multiple browsers open, verify all tabs detected
 
-- [ ] T015 [P] [US1] Create tests/unit/test_text_extractor.py with test cases:
+- [x] T015 [P] [US1] Create tests/unit/test_text_extractor.py with test cases:
   - test_extract_simple_html() - Parse basic HTML, extract text content
   - test_extract_preserves_reading_order() - Text extracted in DOM traversal order
   - test_extract_with_complex_dom() - Nested divs, tables, lists; verify correct extraction
   - test_extract_unicode_content() - Handle special characters, emojis
 
-- [ ] T016 [P] [US1] Create tests/unit/test_tts_synthesizer.py with test cases:
+- [x] T016 [P] [US1] Create tests/unit/test_tts_synthesizer.py with test cases:
   - test_synthesize_basic_text() - Convert text to audio bytes
   - test_synthesize_long_text() - Handle text >1000 characters
   - test_synthesize_multiple_speeds() - Verify speed parameter affects output
 
-- [ ] T017 [P] [US1] Create tests/integration/test_tab_to_speech.py with test cases:
+- [x] T017 [P] [US1] Create tests/integration/test_tab_to_speech.py with test cases:
   - test_full_tab_read_flow() - Open tab, extract text, synthesize, play audio (mocked)
   - test_inactive_tab_read() - Read from background tab without focus switch
   - test_playback_pause_resume() - Start audio, pause, resume from same position
@@ -89,58 +89,58 @@ description: "Task breakdown for Web Reader AI feature implementation"
 
 ### Implementation for User Story 1
 
-- [ ] T018 [P] [US1] Create src/browser/detector.py implementing Windows process detection:
+- [x] T018 [P] [US1] Create src/browser/detector.py implementing Windows process detection:
   - `detect_browser_tabs()` → List[TabInfo]
   - Uses pywinauto to enumerate Chrome, Edge, Firefox processes
   - Extracts tab titles/URLs from window titles or accessibility APIs
   - Returns: list of TabInfo objects with browser_name, tab_id, title, url
   - File: src/browser/detector.py
 
-- [ ] T019 [P] [US1] Create src/browser/accessibility.py wrapping Windows Accessibility API:
+- [x] T019 [P] [US1] Create src/browser/accessibility.py wrapping Windows Accessibility API:
   - `get_window_text(window_handle)` → str
   - `get_browser_tabs(process_name)` → List[TabInfo]
   - File: src/browser/accessibility.py
 
-- [ ] T020 [P] [US1] Create src/extraction/html_parser.py implementing BeautifulSoup integration:
+- [x] T020 [P] [US1] Create src/extraction/html_parser.py implementing BeautifulSoup integration:
   - `parse_html(html_content)` → BeautifulSoup object
   - Extract visible text from DOM
   - Filter out script/style tags
   - File: src/extraction/html_parser.py
 
-- [ ] T021 [US1] Create src/extraction/dom_walker.py implementing DOM traversal:
+- [x] T021 [US1] Create src/extraction/dom_walker.py implementing DOM traversal:
   - `walk_dom(soup)` → List[str] (ordered text segments)
   - Traverse tree in reading order (depth-first)
   - Preserve paragraph/section boundaries
   - File: src/extraction/dom_walker.py
 
-- [ ] T022 [US1] Implement src/extraction/text_extractor.py concrete class:
+- [x] T022 [US1] Implement src/extraction/text_extractor.py concrete class:
   - `extract_from_tab(tab_info)` → str
   - Call browser detector → get tab HTML content
   - Parse HTML → extract text
   - Return combined text
   - File: src/extraction/text_extractor.py
 
-- [ ] T023 [P] [US1] Create src/tts/piper_provider.py implementing Piper neural TTS:
+- [x] T023 [P] [US1] Create src/tts/piper_provider.py implementing Piper neural TTS:
   - `synthesize_piper(text, voice='en_US-libritts-high', speed=1.0)` → bytes (WAV audio)
   - Uses pre-trained Piper models (downloaded on first use, cached locally)
   - Runs completely offline; no API keys or internet required
   - Handle model loading and synthesis errors gracefully
   - File: src/tts/piper_provider.py
 
-- [ ] T024 [P] [US1] Create src/tts/playback.py implementing audio playback:
+- [x] T024 [P] [US1] Create src/tts/playback.py implementing audio playback:
   - `play_audio(audio_bytes)` → None
   - Use winsound or python-audio library
   - Support pause/resume (store playback state)
   - Support volume/speed controls
   - File: src/tts/playback.py
 
-- [ ] T025 [US1] Implement src/tts/synthesizer.py concrete class:
+- [x] T025 [US1] Implement src/tts/synthesizer.py concrete class:
   - `synthesize_text(text)` → bytes
   - Delegate to Azure provider
   - Cache results to avoid re-synthesis
   - File: src/tts/synthesizer.py
 
-- [ ] T026 [US1] Create src/main.py entry point with basic CLI:
+- [x] T026 [US1] Create src/main.py entry point with basic CLI:
   - Accept command-line arguments: --tab-id, --url, --file
   - Call TextExtractor → Synthesizer → Playback
   - Output progress to console
