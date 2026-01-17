@@ -24,6 +24,25 @@ We're keeping:
 
 ---
 
+---
+
+## Phase 0: Versioning & Release System (Pre-req)
+
+**Goal**: Enforce semantic versioning, automate version bumps, and streamline releases
+
+- [x] V001 Add commitizen to dev dependencies in pyproject.toml
+- [x] V002 Configure commitizen for Conventional Commits and changelog generation
+- [x] V003 Add cz.yaml or .cz.toml config file for commitizen
+- [x] V004 Document commit message policy in README and CONSTITUTION.md
+- [x] V005 Add CHANGELOG.md and document release process
+- [x] V006 Add GitHub Actions workflow for auto-version bump and changelog on merge
+- [x] V007 Add GitHub Actions workflow for PyPI and exe release on tag
+- [x] V008 Test version bump and changelog locally (`cz bump`)
+- [x] V009 Document release workflow in INSTALLATION.md and README.md
+- [ ] V009 Document release workflow in INSTALLATION.md and README.md
+
+---
+
 ## Phase 1: Foundation (Already Complete ✅)
 
 **Status**: All tests passing, 185 tests, code formatted and linted
@@ -218,6 +237,19 @@ All tasks in each phase should complete before moving to the next.
 ## Next Steps
 
 1. Review this simplified task list ✅
+2. Approve scope changes (URL-only, no browser tabs, no file input)
+3. Begin Phase 2 (CLI enhancement with colorama)
+4. Build standalone exe in Phase 3
+5. Release v1.0 with both PyPI and exe distribution methods
+
+
+
+## Phase 5: Post-Release Validation
+
+- [ ] R001 Verify version bump and changelog on merge to main
+- [ ] R002 Verify PyPI and exe artifacts are published on release
+- [ ] R003 Confirm documentation is up to date (README, INSTALLATION, CHANGELOG)
+- [ ] R004 Review constitution and update if process changes
 2. Approve scope changes (URL-only, no browser tabs, no file input)
 3. Begin Phase 2 (CLI enhancement with colorama)
 4. Build standalone exe in Phase 3

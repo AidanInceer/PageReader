@@ -34,6 +34,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "ruff>=0.1.0",
     "pre-commit>=3.4.0",
+    "commitizen>=3.0.0",
 ]
 test = [
     "pytest>=7.4.0",
@@ -84,3 +85,26 @@ markers = [
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "1.0.0"
+version_files = [
+    "pyproject.toml:version",
+    "src/__init__.py:__version__",
+]
+style = [
+    ["qmark", "fg:#ff9d00 bold"],
+    ["question", "bold"],
+    ["answer", "fg:#ff9d00 bold"],
+    ["pointer", "fg:#ff9d00 bold"],
+    ["highlighted", "fg:#ff9d00 bold"],
+    ["selected", "fg:#cc5454"],
+    ["separator", "fg:#cc5454"],
+    ["instruction", ""],
+    ["text", ""],
+    ["disabled", "fg:#858585 italic"]
+]
+update_changelog_on_bump = true
+major_version_zero = true
+tag_format = "v$version"

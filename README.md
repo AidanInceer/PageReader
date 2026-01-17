@@ -28,17 +28,21 @@
 
 ### Installation
 
+For detailed installation instructions, including standalone executable installation, see [INSTALLATION.md](INSTALLATION.md).
+
+**Quick Install (PyPI)**:
 ```bash
-# Clone repository
-git clone https://github.com/your-username/PageReader.git
-cd PageReader
+# Using pip
+pip install pagereader
 
-# Install dependencies (using uv)
-uv pip install -e ".[dev]"
-
-# Or using pip
-pip install -e ".[dev]"
+# Or using uv (faster)
+uv pip install pagereader
 ```
+
+**Download Standalone Executable**:
+- No Python required
+- Download from [Releases](https://github.com/AidanInceer/PageReader/releases)
+- See [INSTALLATION.md](INSTALLATION.md) for setup instructions
 
 ### First Run
 
@@ -211,6 +215,54 @@ Contributions are welcome! Please follow the development workflow above and ensu
 2. Tests are written before implementation (Test-First Development)
 3. Code passes ruff linting checks
 4. All GitHub Actions checks pass on your PR
+5. **Follow Conventional Commits** for all commit messages (see below)
+
+### Commit Message Policy
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) to ensure consistent, machine-readable commit history. All commits must follow this format:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Commit Types**:
+- `feat`: New feature for the user
+- `fix`: Bug fix for the user
+- `docs`: Documentation-only changes
+- `style`: Code style changes (formatting, missing semi-colons, etc.)
+- `refactor`: Code refactoring without changing behavior
+- `perf`: Performance improvements
+- `test`: Adding or modifying tests
+- `build`: Changes to build system or dependencies
+- `ci`: Changes to CI/CD configuration files
+- `chore`: Other changes that don't modify src or test files
+- `revert`: Reverts a previous commit
+
+**Examples**:
+```bash
+feat(tts): add speed adjustment controls
+fix(extraction): handle malformed HTML without crashing
+docs(readme): update installation instructions
+test(browser): add unit tests for tab detection
+```
+
+**Using Commitizen**:
+This project includes [Commitizen](https://commitizen-tools.github.io/commitizen/) to help you create properly formatted commits:
+
+```bash
+# Interactive commit (prompts you for type, scope, description, etc.)
+cz commit
+
+# Or use the shorthand
+cz c
+
+# Bump version and generate changelog (maintainers only)
+cz bump
+```
 
 See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
 

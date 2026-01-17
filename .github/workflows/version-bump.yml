@@ -1,0 +1,122 @@
+name: Version Bump
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - major
+          - minor
+          - patch
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    
+    # Skip if commit message contains [skip ci] or [skip bump]
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[skip bump]')"
+    
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          
+      - name: Install Commitizen
+        run: |
+          pip install commitizen
+          
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+      - name: Check for version bump (auto)
+        if: github.event_name == 'push' || github.event.inputs.bump_type == 'auto'
+        run: |
+          echo "Checking if version bump is needed..."
+          # Get the last commit message
+          LAST_COMMIT=$(git log -1 --pretty=%B)
+          echo "Last commit: $LAST_COMMIT"
+          
+          # Skip if last commit was a version bump
+          if [[ "$LAST_COMMIT" == "bump:"* ]]; then
+            echo "Last commit was a version bump, skipping..."
+            echo "SKIP_BUMP=true" >> $GITHUB_ENV
+          else
+            echo "Version bump needed"
+            echo "SKIP_BUMP=false" >> $GITHUB_ENV
+          fi
+          
+      - name: Bump version (auto)
+        if: env.SKIP_BUMP == 'false' && (github.event_name == 'push' || github.event.inputs.bump_type == 'auto')
+        run: |
+          cz bump --yes --changelog
+          
+      - name: Bump version (manual)
+        if: github.event.inputs.bump_type != 'auto' && github.event_name == 'workflow_dispatch'
+        run: |
+          cz bump --increment ${{ github.event.inputs.bump_type }} --yes --changelog
+          
+      - name: Get new version
+        if: env.SKIP_BUMP == 'false' || github.event_name == 'workflow_dispatch'
+        id: version
+        run: |
+          NEW_VERSION=$(cz version -p)
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+          
+      - name: Push changes
+        if: env.SKIP_BUMP == 'false' || github.event_name == 'workflow_dispatch'
+        run: |
+          git push origin main --follow-tags
+          
+      - name: Create Release
+        if: env.SKIP_BUMP == 'false' || github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const version = '${{ steps.version.outputs.version }}';
+            
+            // Extract changelog section for this version
+            let changelog = '';
+            try {
+              const changelogContent = fs.readFileSync('CHANGELOG.md', 'utf8');
+              const versionSection = changelogContent.match(new RegExp(`## \\[${version}\\].*?(?=## \\[|$)`, 's'));
+              if (versionSection) {
+                changelog = versionSection[0];
+              } else {
+                changelog = 'See CHANGELOG.md for details.';
+              }
+            } catch (error) {
+              console.log('Could not read changelog:', error);
+              changelog = 'See CHANGELOG.md for details.';
+            }
+            
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: `v${version}`,
+              name: `Release v${version}`,
+              body: changelog,
+              draft: false,
+              prerelease: version.includes('alpha') || version.includes('beta') || version.includes('rc')
+            });
