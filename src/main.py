@@ -182,22 +182,17 @@ def _get_content(args) -> str:
         if args.tab:
             # Get specific tab by ID
             print(f"  Reading tab: {args.tab}")
-            # TODO: Look up tab by ID from detected tabs
             return extractor.extract(args.tab)
 
         elif args.url:
             # Fetch from URL
             print(f"  Fetching from: {args.url}")
-            # TODO: Implement URL fetching
-            print("  (URL reading not yet implemented)")
-            return ""
+            return extractor.extract_from_url(args.url)
 
         elif args.file:
             # Load from file
             print(f"  Loading from: {args.file}")
-            # TODO: Implement file loading
-            print("  (File loading not yet implemented)")
-            return ""
+            return extractor.extract_from_file(args.file)
 
         elif args.active:
             # Get active tab

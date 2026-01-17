@@ -227,3 +227,95 @@ class ConcreteTextExtractor(TextExtractor):
         """
         # This implementation supports tabs primarily
         return source_type.lower() in ["tab", "browser", "tabs", "html"]
+
+    def extract_from_url(self, url: str) -> str:
+        """Extract text from a web URL.
+
+        Args:
+            url: URL to fetch and extract from
+
+        Returns:
+            Extracted text content from the webpage
+
+        Raises:
+            ExtractionError: If fetching or extraction fails
+        """
+        try:
+            # Import here to avoid circular dependency
+            from src.extraction.content_filter import filter_main_content
+            from src.extraction.url_fetcher import fetch_url
+
+            # Fetch HTML from URL
+            html_content = fetch_url(url, timeout=self.timeout)
+
+            # Parse HTML
+            soup = parse_html(html_content)
+            if not soup:
+                raise ExtractionError("Failed to parse HTML from URL")
+
+            # Filter to main content
+            soup = filter_main_content(soup)
+            if not soup:
+                soup = parse_html(html_content)
+
+            # Clean HTML
+            soup = clean_html(soup)
+
+            # Extract text
+            text = extract_visible_text(soup)
+
+            if not text or not text.strip():
+                raise ExtractionError(f"No text content extracted from {url}")
+
+            return text.strip()
+
+        except ExtractionError:
+            raise
+        except Exception as e:
+            raise ExtractionError(f"Failed to extract text from URL {url}: {str(e)}") from e
+
+    def extract_from_file(self, file_path: str) -> str:
+        """Extract text from a local HTML file.
+
+        Args:
+            file_path: Path to local HTML file
+
+        Returns:
+            Extracted text content from the file
+
+        Raises:
+            ExtractionError: If loading or extraction fails
+        """
+        try:
+            # Import here to avoid circular dependency
+            from src.extraction.content_filter import filter_main_content
+            from src.extraction.file_loader import load_file
+
+            # Load HTML from file
+            html_content = load_file(file_path)
+
+            # Parse HTML
+            soup = parse_html(html_content)
+            if not soup:
+                raise ExtractionError("Failed to parse HTML from file")
+
+            # Filter to main content
+            soup = filter_main_content(soup)
+            if not soup:
+                soup = parse_html(html_content)
+
+            # Clean HTML
+            soup = clean_html(soup)
+
+            # Extract text
+            text = extract_visible_text(soup)
+
+            if not text or not text.strip():
+                raise ExtractionError(f"No text content extracted from {file_path}")
+
+            return text.strip()
+
+        except ExtractionError:
+            raise
+        except Exception as e:
+            raise ExtractionError(f"Failed to extract text from file {file_path}: {str(e)}") from e

@@ -186,51 +186,51 @@ description: "Task breakdown for Web Reader AI feature implementation"
 
 > **WRITE THESE TESTS FIRST**
 
-- [ ] T027 [P] [US2] Create tests/unit/test_url_fetcher.py with test cases:
+- [X] T027 [P] [US2] Create tests/unit/test_url_fetcher.py with test cases:
   - test_fetch_valid_url() - HTTP GET request, verify response content
   - test_fetch_with_timeout() - Request exceeds timeout, handle gracefully
   - test_fetch_invalid_url() - Non-existent domain, return error
   - test_fetch_requires_auth() - Password-protected page, handle 401
 
-- [ ] T028 [P] [US2] Create tests/unit/test_file_loader.py with test cases:
+- [X] T028 [P] [US2] Create tests/unit/test_file_loader.py with test cases:
   - test_load_local_html_file() - Read HTML from disk
   - test_load_nonexistent_file() - File not found, return error
   - test_load_with_encoding() - Handle UTF-8 and other encodings
 
-- [ ] T029 [P] [US2] Create tests/integration/test_url_to_speech.py with test cases:
+- [X] T029 [P] [US2] Create tests/integration/test_url_to_speech.py with test cases:
   - test_full_url_read_flow() - Fetch URL, extract text, synthesize, playback
   - test_file_read_flow() - Load local HTML, extract, synthesize, playback
   - test_complex_webpage_extraction() - Real webpage with nav/header/footer, verify main content prioritized
 
 ### Implementation for User Story 2
 
-- [ ] T030 [P] [US2] Create src/extraction/url_fetcher.py:
+- [X] T030 [P] [US2] Create src/extraction/url_fetcher.py:
   - `fetch_url(url, timeout=10)` → str (HTML content)
   - Use requests library
   - Handle redirects, timeouts, errors
   - Return HTML or raise URLFetchError
   - File: src/extraction/url_fetcher.py
 
-- [ ] T031 [P] [US2] Create src/extraction/file_loader.py:
+- [X] T031 [P] [US2] Create src/extraction/file_loader.py:
   - `load_file(file_path)` → str (HTML content)
   - Accept .html, .htm files
   - Auto-detect encoding
   - Return content or raise FileLoadError
   - File: src/extraction/file_loader.py
 
-- [ ] T032 [US2] Update src/extraction/text_extractor.py to support multiple sources:
+- [X] T032 [US2] Update src/extraction/text_extractor.py to support multiple sources:
   - `extract_from_url(url)` → str
   - `extract_from_file(file_path)` → str
   - Reuse HTML parsing logic from existing impl
   - File: src/extraction/text_extractor.py (update existing)
 
-- [ ] T033 [P] [US2] Create src/extraction/content_filter.py implementing section extraction:
+- [X] T033 [P] [US2] Create src/extraction/content_filter.py implementing section extraction:
   - `filter_main_content(soup)` → BeautifulSoup (filtered DOM)
   - Detect and remove: nav, header, footer, sidebar, ads
   - Prioritize main article/content sections
   - File: src/extraction/content_filter.py
 
-- [ ] T034 [US2] Update src/main.py to accept URL and file arguments:
+- [X] T034 [US2] Update src/main.py to accept URL and file arguments:
   - `pagereader read --url https://...`
   - `pagereader read --file local.html`
   - File: src/main.py (update CLI)
@@ -239,11 +239,11 @@ description: "Task breakdown for Web Reader AI feature implementation"
 
 ### Phase 4 Refactoring Checkpoint
 
-- [ ] T034a Format all Phase 4 code with `ruff format .`
-- [ ] T034b Lint all Phase 4 code with `ruff check --fix`
-- [ ] T034c Review Phase 4 code for SOLID violations, content filter accuracy, error handling consistency
-- [ ] T034d Run `pytest tests/ --cov=src --cov-report=term-missing` and verify ≥80% coverage maintained
-- [ ] T034e Commit Phase 4 with message: "Phase 4: Refactor (format, lint, coverage check)"
+- [X] T034a Format all Phase 4 code with `ruff format .`
+- [X] T034b Lint all Phase 4 code with `ruff check --fix`
+- [X] T034c Review Phase 4 code for SOLID violations, content filter accuracy, error handling consistency
+- [X] T034d Run `pytest tests/ --cov=src --cov-report=term-missing` and verify ≥80% coverage maintained
+- [X] T034e Commit Phase 4 with message: "Phase 4: Refactor (format, lint, coverage check)"
 
 ---
 
