@@ -26,6 +26,7 @@ dependencies = [
     "piper-tts>=1.2.0",
     "pywinauto>=0.6.9",
     "black>=25.12.0",
+    "colorama>=0.4.6",
 ]
 
 [project.optional-dependencies]

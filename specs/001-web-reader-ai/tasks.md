@@ -67,27 +67,27 @@ python -m src.main read --url https://example.com
 
 ### CLI Improvements
 
-- [ ] T101 Add `colorama` to pyproject.toml dependencies for cross-platform colored output
-- [ ] T102 Update src/main.py to use colored output:
+- [x] T101 Add `colorama` to pyproject.toml dependencies for cross-platform colored output
+- [x] T102 Update src/main.py to use colored output:
   - Cyan ([*]) for status messages
   - Green ([OK]) for success
   - Red ([ERROR]) for errors
   - Yellow ([!]) for warnings
-- [ ] T103 Add progress indicators for long operations:
+- [x] T103 Add progress indicators for long operations:
   - URL fetching: show "Fetching URL..." with elapsed time
   - TTS synthesis: show "Synthesizing speech..." with elapsed time
-- [ ] T104 Improve help text and command examples:
+- [x] T104 Improve help text and command examples:
   - Update `--help` to show usage examples
   - Add descriptions of what each option does
   - Show example: `pagereader read --url https://example.com`
-- [ ] T105 Add validation and error messages:
+- [x] T105 Add validation and error messages:
   - Validate URL format before fetching
   - Display user-friendly error messages for common failures
   - Suggest fixes (e.g., "URL fetch failed: check internet connection")
-- [ ] T106 Format and lint all CLI changes with ruff
-- [ ] T107 Create tests/unit/test_cli_output.py to verify colored output and messaging
+- [x] T106 Format and lint all CLI changes with ruff
+- [x] T107 Create tests/unit/test_cli_output.py to verify colored output and messaging
 
-**Checkpoint**: CLI is polished and user-friendly
+**Checkpoint**: CLI is polished and user-friendly ✅
 
 ---
 
