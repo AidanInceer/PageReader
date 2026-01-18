@@ -5,6 +5,14 @@
 **Status**: Draft  
 **Input**: User description: "Enhanced playback controls, session management, and performance improvements through text chunking for PageReader"
 
+## Clarifications
+
+### Session 2026-01-18
+
+- Q: Should play_audio() block until audio finishes (synchronous) or return immediately (non-blocking)? → A: Blocking (synchronous) - play_audio() must wait until audio finishes before returning
+  - Implementation: Added `pygame.mixer.music.get_busy()` polling loop in AudioPlayback.play_audio() to block until playback completes
+  - Technical detail: Polls at 10Hz using `pygame.time.Clock().tick(10)` to avoid busy-waiting while maintaining responsiveness
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Session Management (Priority: P1)
@@ -96,6 +104,7 @@ User experiences faster feedback and improved responsiveness when reading long a
 - **FR-017**: Application MUST handle on-demand synthesis when user skips to un-synthesized chunk
 - **FR-018**: Application MUST display playback position and total duration during playback
 - **FR-019**: Application MUST save playback position when user pauses or quits for session resumption
+- **FR-020**: AudioPlayback.play_audio() MUST block (wait) until audio playback completes before returning to caller
 
 ### Key Entities
 

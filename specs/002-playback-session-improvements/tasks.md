@@ -132,7 +132,7 @@
 #### Update AudioPlayback for pygame.mixer
 
 - [X] T051 [US2] Replace winsound with pygame.mixer initialization in src/tts/playback.py
-- [X] T052 [US2] Implement AudioPlayback.play_audio() using pygame.mixer.Sound in src/tts/playback.py
+- [X] T052 [US2] Implement AudioPlayback.play_audio() using pygame.mixer.music in src/tts/playback.py (MUST block until playback completes)
 - [X] T053 [US2] Implement AudioPlayback.pause() method in src/tts/playback.py
 - [X] T054 [US2] Implement AudioPlayback.resume() method in src/tts/playback.py
 - [X] T055 [US2] Implement AudioPlayback.seek() method in src/tts/playback.py

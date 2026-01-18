@@ -60,6 +60,8 @@ class AudioPlayback:
     def play_audio(self, audio_bytes: bytes, format: str = "wav") -> None:
         """Play audio from bytes using pygame.mixer.
 
+        This method blocks until playback completes.
+
         Args:
             audio_bytes: Audio data to play
             format: Audio format ('wav', 'mp3', etc.)
@@ -82,6 +84,13 @@ class AudioPlayback:
             self.state.is_paused = False
 
             logger.info("Started audio playback with pygame.mixer")
+
+            # Block until playback completes
+            while pygame.mixer.music.get_busy():
+                pygame.time.Clock().tick(10)  # Check 10 times per second
+            
+            self.state.is_playing = False
+            logger.info("Audio playback completed")
 
         except pygame.error as e:
             self.state.is_playing = False
