@@ -76,10 +76,7 @@ class SessionManager:
 
         # Must be alphanumeric, hyphen, or underscore only
         if not re.match(r"^[a-zA-Z0-9_-]+$", session_name):
-            raise ValueError(
-                "Invalid characters in session_name. "
-                "Use only letters, numbers, hyphens, and underscores."
-            )
+            raise ValueError("Invalid characters in session_name. Use only letters, numbers, hyphens, and underscores.")
 
     def _slugify(self, session_name: str) -> str:
         """Convert session name to filename-safe slug.
@@ -127,7 +124,7 @@ class SessionManager:
             if "tmp_path" in locals():
                 try:
                     Path(tmp_path).unlink(missing_ok=True)
-                except:
+                except Exception:  # noqa: S110
                     pass
             raise OSError(f"Failed to write session file: {e}") from e
 
@@ -179,7 +176,7 @@ class SessionManager:
             if "tmp_path" in locals():
                 try:
                     Path(tmp_path).unlink(missing_ok=True)
-                except:
+                except Exception:  # noqa: S110
                     pass
             raise OSError(f"Failed to write index file: {e}") from e
 
@@ -254,16 +251,18 @@ class SessionManager:
 
         # Update index
         index = self._read_index()
-        index.append({
-            "session_name": session_name,
-            "session_id": session_id,
-            "url": url,
-            "title": session_name,
-            "created_at": now.isoformat(),
-            "last_accessed": now.isoformat(),
-            "playback_position": playback_position,
-            "total_characters": len(extracted_text),
-        })
+        index.append(
+            {
+                "session_name": session_name,
+                "session_id": session_id,
+                "url": url,
+                "title": session_name,
+                "created_at": now.isoformat(),
+                "last_accessed": now.isoformat(),
+                "playback_position": playback_position,
+                "total_characters": len(extracted_text),
+            }
+        )
         self._write_index(index)
 
         logger.info(f"Saved session '{session_name}' (ID: {session_id})")

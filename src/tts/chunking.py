@@ -6,14 +6,12 @@ streaming playback.
 """
 
 import logging
-import queue
 import re
 import threading
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
 
-from src import config
 from src.tts.synthesizer import PiperSynthesizer
 
 logger = logging.getLogger(__name__)
@@ -65,9 +63,7 @@ class ChunkSynthesizer:
     DEFAULT_CHUNK_SIZE = 150  # Target words per chunk
     MAX_BUFFER_SIZE = 10  # Maximum chunks to buffer
 
-    def __init__(
-        self, voice: str = "en_US-libritts-high", speed: float = 1.0
-    ):
+    def __init__(self, voice: str = "en_US-libritts-high", speed: float = 1.0):
         """Initialize ChunkSynthesizer.
 
         Args:
@@ -81,9 +77,7 @@ class ChunkSynthesizer:
         self.shutdown_event = threading.Event()
         self._worker_threads: List[threading.Thread] = []
         self._lock = threading.Lock()
-        logger.info(
-            f"ChunkSynthesizer initialized (voice={voice}, speed={speed})"
-        )
+        logger.info(f"ChunkSynthesizer initialized (voice={voice}, speed={speed})")
 
     def prepare_chunks(self, text: str) -> None:
         """Split text into chunks and prepare for synthesis.
@@ -129,13 +123,11 @@ class ChunkSynthesizer:
             List of sentence strings
         """
         # Split on sentence boundaries (.!?) followed by whitespace
-        pattern = r'(?<=[.!?])\s+'
+        pattern = r"(?<=[.!?])\s+"
         sentences = re.split(pattern, text)
         return [s.strip() for s in sentences if s.strip()]
 
-    def _group_sentences_into_chunks(
-        self, sentences: List[str]
-    ) -> List[str]:
+    def _group_sentences_into_chunks(self, sentences: List[str]) -> List[str]:
         """Group sentences into chunks of target word count.
 
         Args:
@@ -152,11 +144,7 @@ class ChunkSynthesizer:
             sentence_words = len(sentence.split())
 
             # If adding this sentence exceeds target, start new chunk
-            if (
-                current_word_count > 0
-                and current_word_count + sentence_words
-                > self.DEFAULT_CHUNK_SIZE
-            ):
+            if current_word_count > 0 and current_word_count + sentence_words > self.DEFAULT_CHUNK_SIZE:
                 chunks.append(" ".join(current_chunk))
                 current_chunk = [sentence]
                 current_word_count = sentence_words
@@ -188,14 +176,10 @@ class ChunkSynthesizer:
         first_chunk.synthesis_status = SynthesisStatus.IN_PROGRESS
 
         try:
-            audio_data = self.synthesizer.synthesize(
-                first_chunk.text_content, speed=self.speed
-            )
+            audio_data = self.synthesizer.synthesize(first_chunk.text_content, speed=self.speed)
             first_chunk.audio_data = audio_data
             first_chunk.synthesis_status = SynthesisStatus.COMPLETED
-            logger.info(
-                f"First chunk synthesized ({len(audio_data)} bytes)"
-            )
+            logger.info(f"First chunk synthesized ({len(audio_data)} bytes)")
         except Exception as e:
             logger.error(f"Failed to synthesize first chunk: {e}")
             first_chunk.synthesis_status = SynthesisStatus.FAILED
@@ -238,14 +222,9 @@ class ChunkSynthesizer:
             with self._lock:
                 pending_chunk = None
                 for i in range(chunk_index, len(self.chunks)):
-                    if (
-                        self.chunks[i].synthesis_status
-                        == SynthesisStatus.PENDING
-                    ):
+                    if self.chunks[i].synthesis_status == SynthesisStatus.PENDING:
                         pending_chunk = self.chunks[i]
-                        pending_chunk.synthesis_status = (
-                            SynthesisStatus.IN_PROGRESS
-                        )
+                        pending_chunk.synthesis_status = SynthesisStatus.IN_PROGRESS
                         chunk_index = i + 1
                         break
 
@@ -255,30 +234,20 @@ class ChunkSynthesizer:
 
             # Synthesize chunk (outside lock)
             try:
-                audio_data = self.synthesizer.synthesize(
-                    pending_chunk.text_content, speed=self.speed
-                )
+                audio_data = self.synthesizer.synthesize(pending_chunk.text_content, speed=self.speed)
 
                 with self._lock:
                     pending_chunk.audio_data = audio_data
-                    pending_chunk.synthesis_status = (
-                        SynthesisStatus.COMPLETED
-                    )
+                    pending_chunk.synthesis_status = SynthesisStatus.COMPLETED
 
                     # Add to buffer if space available
                     if len(self.chunk_buffer) < self.MAX_BUFFER_SIZE:
                         self.chunk_buffer.append(pending_chunk)
 
-                logger.debug(
-                    f"Worker {worker_id} synthesized chunk "
-                    f"{pending_chunk.chunk_index}"
-                )
+                logger.debug(f"Worker {worker_id} synthesized chunk {pending_chunk.chunk_index}")
 
             except Exception as e:
-                logger.error(
-                    f"Worker {worker_id} failed to synthesize chunk "
-                    f"{pending_chunk.chunk_index}: {e}"
-                )
+                logger.error(f"Worker {worker_id} failed to synthesize chunk {pending_chunk.chunk_index}: {e}")
                 with self._lock:
                     pending_chunk.synthesis_status = SynthesisStatus.FAILED
 
@@ -318,16 +287,12 @@ class ChunkSynthesizer:
         chunk.synthesis_status = SynthesisStatus.IN_PROGRESS
 
         try:
-            audio_data = self.synthesizer.synthesize(
-                chunk.text_content, speed=self.speed
-            )
+            audio_data = self.synthesizer.synthesize(chunk.text_content, speed=self.speed)
             chunk.audio_data = audio_data
             chunk.synthesis_status = SynthesisStatus.COMPLETED
             logger.info(f"Chunk {chunk_index} synthesized on-demand")
         except Exception as e:
-            logger.error(
-                f"Failed to synthesize chunk {chunk_index}: {e}"
-            )
+            logger.error(f"Failed to synthesize chunk {chunk_index}: {e}")
             chunk.synthesis_status = SynthesisStatus.FAILED
             raise
 

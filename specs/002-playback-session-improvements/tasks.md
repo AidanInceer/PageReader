@@ -218,12 +218,12 @@
 
 ### Integration with PlaybackController
 
-- [ ] T103 [US3] Update PlaybackController.start() to accept ChunkSynthesizer in src/tts/controller.py
-- [ ] T104 [US3] Update PlaybackController playback loop to consume chunks from ChunkSynthesizer.get_next_chunk() in src/tts/controller.py
-- [ ] T105 [US3] Add "Buffering..." indicator when chunk buffer empty in src/tts/controller.py
-- [ ] T106 [US3] Update PlaybackController.seek() to trigger on-demand synthesis if seeking to unsynthesized chunk in src/tts/controller.py
-- [ ] T107 [US3] Update command_read() to use ChunkSynthesizer for text synthesis in src/main.py
-- [ ] T108 [US3] Add progress display during chunking (e.g., "Synthesizing chunk 3/8...") in src/main.py
+- [X] T103 [US3] Update PlaybackController.start() to accept ChunkSynthesizer in src/tts/controller.py
+- [X] T104 [US3] Update PlaybackController playback loop to consume chunks from ChunkSynthesizer.get_next_chunk() in src/tts/controller.py
+- [X] T105 [US3] Add "Buffering..." indicator when chunk buffer empty in src/tts/controller.py
+- [X] T106 [US3] Update PlaybackController.seek() to trigger on-demand synthesis if seeking to unsynthesized chunk in src/tts/controller.py
+- [X] T107 [US3] Update command_read() to use ChunkSynthesizer for text synthesis in src/main.py
+- [X] T108 [US3] Add progress display during chunking (e.g., "Synthesizing chunk 3/8...") in src/main.py
 
 **Manual Test**: `pagereader read --url <long-article-url>` (find article with 5000+ words), verify first audio <3s, verify smooth playback
 
@@ -235,19 +235,19 @@
 
 **Purpose**: Final touches, documentation, and release preparation
 
-- [ ] T109 [P] Update README.md with new features: --save-session flag, list-sessions command, resume command, playback controls
-- [ ] T110 [P] Update README.md with keyboard controls documentation (table: key → action)
-- [ ] T111 [P] Add session management examples to README.md (save, list, resume, delete)
-- [ ] T112 [P] Add performance notes to README.md (chunking benefits, time to first audio)
-- [ ] T113 [P] Update CHANGELOG.md for v1.1.0 release (new features, breaking changes if any)
-- [ ] T114 [P] Update pyproject.toml version from 1.0.0 to 1.1.0
-- [ ] T115 [P] Add docstrings to all public methods in SessionManager (src/session/manager.py)
-- [ ] T116 [P] Add docstrings to all public methods in PlaybackController (src/tts/controller.py)
-- [ ] T117 [P] Add docstrings to all public methods in ChunkSynthesizer (src/tts/chunking.py)
-- [ ] T118 [P] Run ruff format on all modified files
-- [ ] T119 [P] Run ruff lint on all modified files and fix issues
-- [ ] T120 Verify test coverage ≥80% for all new modules: `pytest tests/ --cov=src --cov-report=term-missing --cov-fail-under=80`
-- [ ] T121 Run full test suite: `pytest tests/ -v`
+- [X] T109 [P] Update README.md with new features: --save-session flag, list-sessions command, resume command, playback controls
+- [X] T110 [P] Update README.md with keyboard controls documentation (table: key → action)
+- [X] T111 [P] Add session management examples to README.md (save, list, resume, delete)
+- [X] T112 [P] Add performance notes to README.md (chunking benefits, time to first audio)
+- [X] T113 [P] Update CHANGELOG.md for v1.1.0 release (new features, breaking changes if any)
+- [X] T114 [P] Update pyproject.toml version from 1.0.0 to 1.1.0
+- [X] T115 [P] Add docstrings to all public methods in SessionManager (src/session/manager.py)
+- [X] T116 [P] Add docstrings to all public methods in PlaybackController (src/tts/controller.py)
+- [X] T117 [P] Add docstrings to all public methods in ChunkSynthesizer (src/tts/chunking.py)
+- [X] T118 [P] Run ruff format on all modified files
+- [X] T119 [P] Run ruff lint on all modified files and fix issues
+- [X] T120 Verify test coverage ≥80% for all new modules: `pytest tests/ --cov=src --cov-report=term-missing --cov-fail-under=80`
+- [X] T121 Run full test suite: `pytest tests/ -v`
 - [ ] T122 [P] Create example session files for documentation/testing
 - [ ] T123 [P] Test PyInstaller build with new pygame dependency: `python scripts/build_exe.py`
 - [ ] T124 Manual testing: Complete all acceptance scenarios from spec.md for US1, US2, US3

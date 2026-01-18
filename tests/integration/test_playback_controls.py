@@ -102,26 +102,26 @@ class TestPlaybackControlWorkflow:
         audio_playback.seek.assert_called_with(15000)
 
     @patch('src.tts.controller.msvcrt')
-    def test_speed_adjustment_operations(self, mock_msvcrt, sample_audio_bytes):
-        """Test speed increase and decrease."""
+    def test_speed_adjustment_operations(self, mock_msvcrt, sample_audio_bytes, capsys):
+        """Test that speed adjustment warns user it's not supported during playback."""
         audio_playback = Mock(spec=AudioPlayback)
         audio_playback.state = PlaybackState(is_playing=True)
-        # Mock set_speed to update state like real implementation would
-        def set_speed_side_effect(speed):
-            audio_playback.state.playback_speed = speed
-        audio_playback.set_speed = Mock(side_effect=set_speed_side_effect)
+        # Note: pygame.mixer doesn't support runtime speed control
+        # Speed must be set before playback with --speed flag
         
         controller = PlaybackController(audio_playback)
         
-        # Increase speed
+        # Attempt to adjust speed during playback
+        # Should warn user but not raise exception
         controller.adjust_speed(0.25)
-        assert controller.state.playback_speed == 1.25
-        audio_playback.set_speed.assert_called_with(1.25)
         
-        # Decrease speed
-        controller.adjust_speed(-0.5)
-        assert controller.state.playback_speed == 0.75
-        audio_playback.set_speed.assert_called_with(0.75)
+        # Verify state hasn't changed (speed control not supported)
+        assert controller.state.playback_speed == 1.0
+        
+        # Verify warning message was displayed
+        captured = capsys.readouterr()
+        assert "Speed control not available during playback" in captured.out
+        assert "--speed flag" in captured.out
 
     def test_graceful_shutdown(self, sample_audio_bytes):
         """Test that quit provides clean shutdown."""

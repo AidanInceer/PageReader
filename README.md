@@ -15,8 +15,9 @@ PageReader extracts text from browser tabs (Chrome, Edge, Firefox, etc.) or web 
 - 🌐 Supports Chrome, Edge, Firefox, Opera, Brave
 - 🔗 Read from URLs or local HTML files
 - 🎙️ Open-source Piper TTS (fully offline, no API keys)
-- ⚙️ Playback controls (pause/resume/speed adjustment)
-- 💾 Save and resume reading sessions
+- 🎮 Interactive playback controls (pause/resume/seek with keyboard shortcuts)
+- 💾 Save and resume reading sessions with custom names
+- ⚡ Streaming text-to-speech with chunking for faster feedback (<3s to first audio)
 
 ## Installation
 
@@ -50,32 +51,71 @@ Download `pagereader.exe` from the [Releases](https://github.com/AidanInceer/Pag
 ### Basic Commands
 
 ```bash
-# List all open browser tabs
-pagereader tabs
-
 # Read from a URL
 pagereader read --url https://example.com
+
+# Read with custom voice and speed
+pagereader read --url https://example.com --voice en_US-libritts-high --speed 1.5
+
+# Save audio to file instead of playing
+pagereader read --url https://example.com --output audio.wav
+
+# Read from a local HTML file
+pagereader read --file article.html
 ```
 
 ### Session Management
 
+Save reading sessions and resume later from where you left off:
+
 ```bash
-# Save a reading session
-pagereader read --url https://example.com --save-session my-article
+# Save a reading session with a custom name
+pagereader read --url https://example.com/long-article --save-session my-article
 
-# List saved sessions
-pagereader sessions
+# List all saved sessions
+pagereader list-sessions
 
-# Resume a session
+# Resume a saved session
 pagereader resume my-article
+
+# Delete a session
+pagereader delete-session my-article
 ```
 
-### Playback Controls
+Session features:
+- 📝 Save with custom names (alphanumeric, hyphens, underscores)
+- 📊 View progress (character position and percentage complete)
+- ⏮️ Resume from exact position where you quit
+- 🗑️ Delete sessions you no longer need
+- 🔍 List all sessions with timestamps and URLs
 
-During playback:
-- `SPACE` - Pause/Resume
-- `<` / `>` - Decrease/Increase speed
-- `Q` - Quit
+### Interactive Playback Controls
+
+During audio playback, use keyboard shortcuts to control playback:
+
+| Key | Action |
+|-----|--------|
+| `SPACE` | Pause/Resume playback |
+| `→` (Right Arrow) | Seek forward 5 seconds |
+| `←` (Left Arrow) | Seek backward 5 seconds |
+| `Q` | Quit playback gracefully |
+
+**Note**: Speed adjustment must be set before playback starts using the `--speed` flag (e.g., `--speed 1.5`). Runtime speed control during playback is not supported.
+
+### Streaming Playback Performance
+
+For longer articles (>200 words), PageReader uses intelligent chunking:
+- ✅ First audio chunk synthesized in <3 seconds
+- ✅ Background synthesis of remaining chunks while playing
+- ✅ Seamless transitions between chunks (<50ms gaps)
+- ✅ Memory-efficient buffering (max 10 chunks in memory)
+
+Example with a 5,000-word article:
+```bash
+pagereader read --url https://example.com/long-article
+# First audio starts playing within 3 seconds
+# Remaining chunks synthesize in background
+```
 
 ## Development
 

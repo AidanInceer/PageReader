@@ -221,45 +221,35 @@ class TestPlaybackControllerSeek:
 class TestPlaybackControllerAdjustSpeed:
     """Tests for PlaybackController.adjust_speed()"""
 
-    def test_adjust_speed_increase(self, controller, mock_audio_playback):
-        """Test increasing playback speed."""
+    def test_adjust_speed_displays_warning(self, controller, mock_audio_playback, capsys):
+        """Test that adjust_speed displays a warning about lack of runtime support."""
         controller.state.is_playing = True
         controller.state.playback_speed = 1.0
         
+        # Speed adjustment during playback is not supported
         controller.adjust_speed(0.25)
         
-        assert controller.state.playback_speed == 1.25
-        mock_audio_playback.set_speed.assert_called_once_with(1.25)
+        # State should not change
+        assert controller.state.playback_speed == 1.0
+        
+        # Should display warning message
+        captured = capsys.readouterr()
+        assert "Speed control not available during playback" in captured.out
+        assert "--speed flag" in captured.out
+        
+        # set_speed should not be called
+        mock_audio_playback.set_speed.assert_not_called()
 
-    def test_adjust_speed_decrease(self, controller, mock_audio_playback):
-        """Test decreasing playback speed."""
+    def test_adjust_speed_does_not_crash(self, controller, mock_audio_playback):
+        """Test that adjust_speed does not crash or raise exception."""
         controller.state.is_playing = True
         controller.state.playback_speed = 1.5
         
+        # Should not raise exception, just warn
         controller.adjust_speed(-0.25)
         
-        assert controller.state.playback_speed == 1.25
-        mock_audio_playback.set_speed.assert_called_once_with(1.25)
-
-    def test_adjust_speed_clamps_to_max(self, controller, mock_audio_playback):
-        """Test speed is clamped to maximum 2.0x."""
-        controller.state.is_playing = True
-        controller.state.playback_speed = 1.9
-        
-        controller.adjust_speed(0.5)  # Would be 2.4, should clamp to 2.0
-        
-        assert controller.state.playback_speed == 2.0
-        mock_audio_playback.set_speed.assert_called_once_with(2.0)
-
-    def test_adjust_speed_clamps_to_min(self, controller, mock_audio_playback):
-        """Test speed is clamped to minimum 0.5x."""
-        controller.state.is_playing = True
-        controller.state.playback_speed = 0.6
-        
-        controller.adjust_speed(-0.5)  # Would be 0.1, should clamp to 0.5
-        
-        assert controller.state.playback_speed == 0.5
-        mock_audio_playback.set_speed.assert_called_once_with(0.5)
+        # State unchanged
+        assert controller.state.playback_speed == 1.5
 
     def test_adjust_speed_when_not_playing_raises_error(self, controller):
         """Test that adjust_speed() raises error when not playing."""
