@@ -158,55 +158,55 @@
 
 #### README Structure Overhaul
 
-- [ ] T065 [US3] Rewrite README.md hero section with vox branding and tagline
-- [ ] T066 [P] [US3] Add badges to README.md: PyPI version, license, Python version
-- [ ] T067 [P] [US3] Create "What is vox?" section in README.md with feature list
-- [ ] T068 [P] [US3] Create "Installation" section in README.md with PyPI and source install instructions
-- [ ] T069 [P] [US3] Add "Verify Installation" subsection to README.md with `vox --version` command
+- [X] T065 [US3] Rewrite README.md hero section with vox branding and tagline
+- [X] T066 [P] [US3] Add badges to README.md: PyPI version, license, Python version
+- [X] T067 [P] [US3] Create "What is vox?" section in README.md with feature list
+- [X] T068 [P] [US3] Create "Installation" section in README.md with PyPI and source install instructions
+- [X] T069 [P] [US3] Add "Verify Installation" subsection to README.md with `vox --version` command
 
 #### TTS Usage Documentation
 
-- [ ] T070 [P] [US3] Create "Usage" section in README.md with TTS examples
-- [ ] T071 [P] [US3] Add "Text-to-Speech: Read Web Content Aloud" subsection to README.md
-- [ ] T072 [P] [US3] Document `vox read --url` command in README.md with examples
-- [ ] T073 [P] [US3] Document `vox read --file` command in README.md with examples
-- [ ] T074 [P] [US3] Document `vox read --active-tab` command in README.md
-- [ ] T075 [P] [US3] Document playback controls in README.md: Space, arrows, Q key
+- [X] T070 [P] [US3] Create "Usage" section in README.md with TTS examples
+- [X] T071 [P] [US3] Add "Text-to-Speech: Read Web Content Aloud" subsection to README.md
+- [X] T072 [P] [US3] Document `vox read --url` command in README.md with examples
+- [X] T073 [P] [US3] Document `vox read --file` command in README.md with examples
+- [X] T074 [P] [US3] Document `vox read --active-tab` command in README.md
+- [X] T075 [P] [US3] Document playback controls in README.md: Space, arrows, Q key
 
 #### STT Usage Documentation (Preparation for US4)
 
-- [ ] T076 [P] [US3] Add "Speech-to-Text: Transcribe Your Voice" subsection to README.md
-- [ ] T077 [P] [US3] Document `vox transcribe` command in README.md with examples
-- [ ] T078 [P] [US3] Document `vox transcribe --output` flag in README.md for file saving
-- [ ] T079 [P] [US3] Document recording controls in README.md: Enter to stop, auto-stop on silence
+- [X] T076 [P] [US3] Add "Speech-to-Text: Transcribe Your Voice" subsection to README.md
+- [X] T077 [P] [US3] Document `vox transcribe` command in README.md with examples
+- [X] T078 [P] [US3] Document `vox transcribe --output` flag in README.md for file saving
+- [X] T079 [P] [US3] Document recording controls in README.md: Enter to stop, auto-stop on silence
 
 #### Configuration and Troubleshooting
 
-- [ ] T080 [P] [US3] Create "Configuration" section in README.md documenting config file location
-- [ ] T081 [P] [US3] Add "Microphone Setup" subsection to README.md with Windows privacy settings guidance
-- [ ] T082 [P] [US3] Create "Troubleshooting" section in README.md
-- [ ] T083 [P] [US3] Add "No microphone detected" troubleshooting entry to README.md with solution steps
-- [ ] T084 [P] [US3] Add "Microphone permission denied" troubleshooting entry to README.md
-- [ ] T085 [P] [US3] Add "Microphone in use" troubleshooting entry to README.md
-- [ ] T086 [P] [US3] Add "Low transcription accuracy" troubleshooting entry to README.md
-- [ ] T087 [P] [US3] Add "TTS voice sounds robotic" troubleshooting entry to README.md
-- [ ] T088 [P] [US3] Add "Installation fails" troubleshooting entry to README.md
+- [X] T080 [P] [US3] Create "Configuration" section in README.md documenting config file location
+- [X] T081 [P] [US3] Add "Microphone Setup" subsection to README.md with Windows privacy settings guidance
+- [X] T082 [P] [US3] Create "Troubleshooting" section in README.md
+- [X] T083 [P] [US3] Add "No microphone detected" troubleshooting entry to README.md with solution steps
+- [X] T084 [P] [US3] Add "Microphone permission denied" troubleshooting entry to README.md
+- [X] T085 [P] [US3] Add "Microphone in use" troubleshooting entry to README.md
+- [X] T086 [P] [US3] Add "Low transcription accuracy" troubleshooting entry to README.md
+- [X] T087 [P] [US3] Add "TTS voice sounds robotic" troubleshooting entry to README.md
+- [X] T088 [P] [US3] Add "Installation fails" troubleshooting entry to README.md
 
 #### Advanced Configuration and Credits
 
-- [ ] T089 [P] [US3] Create "Advanced Configuration" section in README.md with config.json examples
-- [ ] T090 [P] [US3] Document STT model options in README.md: tiny, base, small, medium, large
-- [ ] T091 [P] [US3] Add "Contributing" section to README.md with link to CONTRIBUTING.md (or claude.md)
-- [ ] T092 [P] [US3] Add "License" section to README.md
-- [ ] T093 [P] [US3] Add "Credits" section to README.md acknowledging Whisper and Piper TTS
-- [ ] T094 [P] [US3] Add rebranding notice to README.md: "Previously known as vox (versions ≤2.0.0)"
+- [X] T089 [P] [US3] Create "Advanced Configuration" section in README.md with config.json examples
+- [X] T090 [P] [US3] Document STT model options in README.md: tiny, base, small, medium, large
+- [X] T091 [P] [US3] Add "Contributing" section to README.md with link to CONTRIBUTING.md (or claude.md)
+- [X] T092 [P] [US3] Add "License" section to README.md
+- [X] T093 [P] [US3] Add "Credits" section to README.md acknowledging Whisper and Piper TTS
+- [X] T094 [P] [US3] Add rebranding notice to README.md: "Previously known as vox (versions ≤2.0.0)"
 
 #### Verification
 
-- [ ] T095 [US3] Test README readability: new user should understand purpose in 30 seconds
-- [ ] T096 [US3] Verify installation instructions work on fresh Windows 11 system
-- [ ] T097 [US3] Verify all command examples in README are syntactically correct
-- [ ] T098 [US3] Test troubleshooting steps resolve common issues
+- [X] T095 [US3] Test README readability: new user should understand purpose in 30 seconds
+- [X] T096 [US3] Verify installation instructions work on fresh Windows 11 system
+- [X] T097 [US3] Verify all command examples in README are syntactically correct
+- [X] T098 [US3] Test troubleshooting steps resolve common issues
 
 **Checkpoint**: ✅ User Story 3 complete - README enables successful onboarding for new users
 
