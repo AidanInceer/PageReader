@@ -220,69 +220,80 @@
 
 ### Module Creation for User Story 4
 
-- [ ] T099 [P] [US4] Create src/stt/ directory for speech-to-text module
-- [ ] T100 [P] [US4] Create src/stt/__init__.py with module docstring
-- [ ] T101 [P] [US4] Create src/stt/engine.py for Whisper engine wrapper
-- [ ] T102 [P] [US4] Create src/stt/recorder.py for microphone audio capture
-- [ ] T103 [P] [US4] Create src/stt/transcriber.py for transcription orchestration
-- [ ] T104 [P] [US4] Create src/stt/audio_utils.py for silence detection and audio processing
+- [X] T099 [P] [US4] Create src/stt/ directory for speech-to-text module
+- [X] T100 [P] [US4] Create src/stt/__init__.py with module docstring
+- [X] T101 [P] [US4] Create src/stt/engine.py for Whisper engine wrapper
+- [X] T102 [P] [US4] Create src/stt/recorder.py for microphone audio capture
+- [X] T103 [P] [US4] Create src/stt/transcriber.py for transcription orchestration
+- [X] T104 [P] [US4] Create src/stt/audio_utils.py for silence detection and audio processing
 
 ### STT Engine Implementation (Whisper)
 
-- [ ] T105 [P] [US4] Create STTEngine class skeleton in src/stt/engine.py with __init__ method
-- [ ] T106 [US4] Implement STTEngine._load_model() in src/stt/engine.py: load faster-whisper model
-- [ ] T107 [US4] Implement STTEngine._check_model_cache() in src/stt/engine.py: verify model exists or download
-- [ ] T108 [US4] Implement STTEngine.transcribe_audio() in src/stt/engine.py: transcribe WAV file to text
-- [ ] T109 [US4] Implement STTEngine._extract_text() in src/stt/engine.py: extract text from segments
-- [ ] T110 [US4] Add error handling for model load failures in src/stt/engine.py (ModelLoadError)
-- [ ] T111 [P] [US4] Add logging for transcription progress in src/stt/engine.py
-- [ ] T112 [P] [US4] Implement STTEngine.get_model_info() in src/stt/engine.py: return model name, size, status
+- [X] T105 [P] [US4] Create STTEngine class skeleton in src/stt/engine.py with __init__ method
+- [X] T106 [US4] Implement STTEngine._load_model() in src/stt/engine.py: load faster-whisper model
+- [X] T107 [US4] Implement STTEngine._check_model_cache() in src/stt/engine.py: verify model exists or download
+- [X] T108 [US4] Implement STTEngine.transcribe_audio() in src/stt/engine.py: transcribe WAV file to text
+- [X] T109 [US4] Implement STTEngine._extract_text() in src/stt/engine.py: extract text from segments
+- [X] T110 [US4] Add error handling for model load failures in src/stt/engine.py (ModelLoadError)
+- [X] T111 [P] [US4] Add logging for transcription progress in src/stt/engine.py
+- [X] T112 [P] [US4] Implement STTEngine.get_model_info() in src/stt/engine.py: return model name, size, status
 
 ### Microphone Recording Implementation
 
-- [ ] T113 [P] [US4] Create MicrophoneRecorder class skeleton in src/stt/recorder.py with __init__ method
-- [ ] T114 [US4] Implement MicrophoneRecorder._detect_default_device() in src/stt/recorder.py using sounddevice
-- [ ] T115 [US4] Implement MicrophoneRecorder._validate_device() in src/stt/recorder.py: check device availability
-- [ ] T116 [US4] Implement MicrophoneRecorder.start_recording() in src/stt/recorder.py: start InputStream with callback
-- [ ] T117 [US4] Implement MicrophoneRecorder._audio_callback() in src/stt/recorder.py: collect audio chunks
-- [ ] T118 [US4] Implement MicrophoneRecorder.stop_recording() in src/stt/recorder.py: stop stream, concatenate chunks
-- [ ] T119 [US4] Implement MicrophoneRecorder.wait_for_enter() in src/stt/recorder.py: blocking input() for Enter key
-- [ ] T120 [US4] Add error handling for microphone detection failures in src/stt/recorder.py (MicrophoneError)
-- [ ] T121 [P] [US4] Add logging for recording start/stop events in src/stt/recorder.py
-- [ ] T122 [US4] Implement MicrophoneRecorder.save_wav() in src/stt/recorder.py: save audio to 16kHz mono WAV
+- [X] T113 [P] [US4] Create MicrophoneRecorder class skeleton in src/stt/recorder.py with __init__ method
+- [X] T114 [US4] Implement MicrophoneRecorder._detect_default_device() in src/stt/recorder.py using sounddevice
+- [X] T115 [US4] Implement MicrophoneRecorder._validate_device() in src/stt/recorder.py: check device availability
+- [X] T116 [US4] Implement MicrophoneRecorder.start_recording() in src/stt/recorder.py: start InputStream with callback
+- [X] T117 [US4] Implement MicrophoneRecorder._audio_callback() in src/stt/recorder.py: collect audio chunks
+- [X] T118 [US4] Implement MicrophoneRecorder.stop_recording() in src/stt/recorder.py: stop stream, concatenate chunks
+- [X] T119 [US4] Implement MicrophoneRecorder.wait_for_enter() in src/stt/recorder.py: blocking input() for Enter key
+- [X] T120 [US4] Add error handling for microphone detection failures in src/stt/recorder.py (MicrophoneError)
+- [X] T121 [P] [US4] Add logging for recording start/stop events in src/stt/recorder.py
+- [X] T122 [US4] Implement MicrophoneRecorder.save_wav() in src/stt/recorder.py: save audio to 16kHz mono WAV
 
 ### Audio Processing and Silence Detection
 
-- [ ] T123 [P] [US4] Implement calculate_rms() in src/stt/audio_utils.py: compute RMS energy of audio chunk
-- [ ] T124 [P] [US4] Implement detect_silence() in src/stt/audio_utils.py: check if chunk below threshold
-- [ ] T125 [P] [US4] Create SilenceDetector class in src/stt/audio_utils.py with state tracking
-- [ ] T126 [US4] Implement SilenceDetector.process_chunk() in src/stt/audio_utils.py: track consecutive silent chunks
-- [ ] T127 [US4] Implement SilenceDetector.is_silence_threshold_reached() in src/stt/audio_utils.py: 5-second check
-- [ ] T128 [US4] Implement SilenceDetector.reset() in src/stt/audio_utils.py: reset counter on sound detected
+- [X] T123 [P] [US4] Implement calculate_rms() in src/stt/audio_utils.py: compute RMS energy of audio chunk
+- [X] T124 [P] [US4] Implement detect_silence() in src/stt/audio_utils.py: check if chunk below threshold
+- [X] T125 [P] [US4] Create SilenceDetector class in src/stt/audio_utils.py with state tracking
+- [X] T126 [US4] Implement SilenceDetector.process_chunk() in src/stt/audio_utils.py: track consecutive silent chunks
+- [X] T127 [US4] Implement SilenceDetector.is_silence_threshold_reached() in src/stt/audio_utils.py: 5-second check
+- [X] T128 [US4] Implement SilenceDetector.reset() in src/stt/audio_utils.py: reset counter on sound detected
 
 ### Transcription Orchestrator
 
-- [ ] T129 [P] [US4] Create Transcriber class skeleton in src/stt/transcriber.py with __init__ method
-- [ ] T130 [US4] Implement Transcriber.transcribe() in src/stt/transcriber.py: main orchestration method
-- [ ] T131 [US4] Implement Transcriber._record_audio() in src/stt/transcriber.py: record with Enter or silence stop
-- [ ] T132 [US4] Implement Transcriber._process_recording() in src/stt/transcriber.py: save WAV, call engine
-- [ ] T133 [US4] Implement Transcriber._display_result() in src/stt/transcriber.py: print to stdout
-- [ ] T134 [US4] Implement Transcriber._save_result() in src/stt/transcriber.py: save to file if --output provided
-- [ ] T135 [US4] Add error handling for transcription failures in src/stt/transcriber.py (TranscriptionError)
-- [ ] T136 [P] [US4] Add progress indicators in src/stt/transcriber.py: "Recording...", "Transcribing..."
+- [X] T129 [P] [US4] Create Transcriber class skeleton in src/stt/transcriber.py with __init__ method
+- [X] T130 [US4] Implement Transcriber.transcribe() in src/stt/transcriber.py: main orchestration method
+- [X] T131 [US4] Implement Transcriber._record_audio() in src/stt/transcriber.py: record with Enter or silence stop
+- [X] T132 [US4] Implement Transcriber._process_recording() in src/stt/transcriber.py: save WAV, call engine
+- [X] T133 [US4] Implement Transcriber._display_result() in src/stt/transcriber.py: print to stdout
+- [X] T134 [US4] Implement Transcriber._save_result() in src/stt/transcriber.py: save to file if --output provided
+- [X] T135 [US4] Add error handling for transcription failures in src/stt/transcriber.py (TranscriptionError)
+- [X] T136 [P] [US4] Add progress indicators in src/stt/transcriber.py: "Recording...", "Transcribing..."
 
 ### CLI Integration for User Story 4
 
-- [ ] T137 [US4] Add transcribe subcommand to parser in src/main.py: `vox transcribe`
-- [ ] T138 [P] [US4] Add --output argument to transcribe subcommand in src/main.py
-- [ ] T139 [P] [US4] Add --model argument to transcribe subcommand in src/main.py (default: medium)
-- [ ] T140 [US4] Implement command_transcribe() handler in src/main.py
-- [ ] T141 [US4] Initialize Transcriber instance in command_transcribe() with config from args
-- [ ] T142 [US4] Call Transcriber.transcribe() and handle output in command_transcribe()
-- [ ] T143 [US4] Add error handling in command_transcribe() for MicrophoneError, ModelLoadError, TranscriptionError
-- [ ] T144 [P] [US4] Add colorized status messages in command_transcribe(): cyan for progress, green for success
+- [X] T137 [US4] Add transcribe subcommand to parser in src/main.py: `vox transcribe`
+- [X] T138 [P] [US4] Add --output argument to transcribe subcommand in src/main.py
+- [X] T139 [P] [US4] Add --model argument to transcribe subcommand in src/main.py (default: medium)
+- [X] T140 [US4] Implement command_transcribe() handler in src/main.py
+- [X] T141 [US4] Initialize Transcriber instance in command_transcribe() with config from args
+- [X] T142 [US4] Call Transcriber.transcribe() and handle output in command_transcribe()
+- [X] T143 [US4] Add error handling in command_transcribe() for MicrophoneError, ModelLoadError, TranscriptionError
+- [X] T144 [P] [US4] Add colorized status messages in command_transcribe(): cyan for progress, green for success
 
 ### Manual Testing and Verification
+
+**Implementation Status**: ✅ Complete - Ready for manual testing by user
+
+**Automated Verification Completed**:
+- ✅ All dependencies installed (faster-whisper, sounddevice, scipy)
+- ✅ All STT modules import successfully without errors
+- ✅ CLI commands registered correctly (vox transcribe)
+- ✅ Command help displays properly
+- ✅ Code passes linting checks
+
+**Recommended Manual Tests** (require microphone and user interaction):
 
 - [ ] T145 [US4] Test basic transcription: `vox transcribe`, speak 10 seconds, press Enter, verify text output
 - [ ] T146 [US4] Test file output: `vox transcribe --output test.txt`, verify file contains transcription
@@ -294,6 +305,13 @@
 - [ ] T152 [US4] Verify transcription accuracy: record clear speech, check 95%+ word accuracy
 - [ ] T153 [US4] Test background noise handling: record with moderate noise, verify transcription still works
 - [ ] T154 [US4] Test different model sizes: `vox transcribe --model small`, verify faster but less accurate
+
+**To Run Manual Tests**:
+1. Ensure microphone is connected and permissions granted in Windows Settings
+2. Run: `python -m src.main transcribe`
+3. Speak clearly for 5-10 seconds
+4. Press Enter or wait for silence detection
+5. Verify transcription output matches spoken words
 
 **Checkpoint**: ✅ User Story 4 complete - speech-to-text fully functional with high accuracy (Coverage target: >80% for critical paths)
 

@@ -842,21 +842,67 @@ def command_delete_session(args):
 
 
 def command_transcribe(args):
-    """Handle the 'transcribe' command (stub for Phase 6).
+    """Handle the 'transcribe' command.
 
     Args:
         args: Parsed command-line arguments
     """
-    print_warning("Speech-to-text transcription not yet implemented")
-    print_status("This feature will be available in Phase 6 (User Story 4)")
-    print()
-    print("Planned functionality:")
-    print("  • Record voice using system microphone")
-    print("  • Transcribe speech using Whisper STT")
-    print("  • Output to stdout or save to file")
-    print("  • Press Enter to stop recording")
-    print()
-    sys.exit(0)
+    from pathlib import Path
+    
+    from src.stt.transcriber import Transcriber
+    from src.utils.errors import MicrophoneError, ModelLoadError, TranscriptionError
+
+    try:
+        # Initialize transcriber
+        print_status(f"Initializing speech-to-text with model: {args.model}")
+        transcriber = Transcriber(model_name=args.model)
+        
+        # Prepare output path if specified
+        output_path = Path(args.output) if args.output else None
+        
+        # Run transcription
+        text = transcriber.transcribe(output_file=output_path)
+        
+        print_success("Transcription complete!")
+        
+    except MicrophoneError as e:
+        print_error(f"Microphone error: {e.message}")
+        print()
+        print("Troubleshooting steps:")
+        print("  1. Check that a microphone is connected")
+        print("  2. Verify microphone permissions in Windows Settings")
+        print("     (Privacy & security > Microphone)")
+        print("  3. Ensure no other application is using the microphone")
+        print()
+        logger.error(f"Microphone error: {e}")
+        sys.exit(1)
+        
+    except ModelLoadError as e:
+        print_error(f"Model loading error: {e.message}")
+        print()
+        print("Troubleshooting steps:")
+        print(f"  1. Check internet connection (first download of '{args.model}' model)")
+        print(f"  2. Verify cache directory exists: {config.STT_MODEL_CACHE}")
+        print("  3. Try a smaller model: --model tiny")
+        print()
+        logger.error(f"Model load error: {e}")
+        sys.exit(1)
+        
+    except TranscriptionError as e:
+        print_error(f"Transcription error: {e.message}")
+        print()
+        print("Troubleshooting steps:")
+        print("  1. Ensure you spoke clearly during recording")
+        print("  2. Check microphone input volume in Windows settings")
+        print("  3. Try recording again with less background noise")
+        print()
+        logger.error(f"Transcription error: {e}")
+        sys.exit(1)
+        
+    except Exception as e:
+        print_error(f"Unexpected error: {str(e)}")
+        logger.exception("Unexpected error in transcribe command")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
