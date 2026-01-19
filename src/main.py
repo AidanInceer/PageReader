@@ -1,7 +1,7 @@
-"""PageReader CLI - Main entry point and command-line interface.
+"""vox CLI - Main entry point and command-line interface.
 
-This is the entry point for the PageReader application.
-Provides commands for reading browser tabs, URLs, and files aloud.
+This is the entry point for the vox application.
+Provides bidirectional audio-text conversion: read content aloud (TTS) and transcribe voice (STT).
 """
 
 import argparse
@@ -89,23 +89,40 @@ class ColoredHelpFormatter(argparse.RawDescriptionHelpFormatter):
 
 
 def main():
-    """Main entry point for PageReader CLI."""
+    """Main entry point for vox CLI."""
+    # Create default config file if it doesn't exist
+    config.create_default_config()
+
+    # Check and run config migration if needed
+    from src.utils.migration import migrate_config
+
+    try:
+        migration_result = migrate_config()
+        if migration_result["migrated"]:
+            print_success("Migrated configuration from vox to vox")
+            print_status(f"Backup saved to: {migration_result['backup_path']}")
+    except Exception as e:
+        # Log but don't fail - migration is non-critical
+        pass
+
     parser = create_parser()
     args = parser.parse_args()
 
     # Handle version flag
     if hasattr(args, "version") and args.version:
-        print("PageReader v1.0.0")
+        print(f"vox v{config.APP_VERSION}")
         sys.exit(0)
 
     # Setup logging
     log_level = "DEBUG" if args.verbose else config.LOG_LEVEL
-    setup_logging(name="pagereader", level=log_level)
+    setup_logging(name="vox", level=log_level)
 
     # Dispatch to appropriate command
     try:
         if args.command == "read":
             command_read(args)
+        elif args.command == "transcribe":
+            command_transcribe(args)
         elif args.command == "list":
             command_list(args)
         elif args.command == "list-sessions":
@@ -137,9 +154,15 @@ def create_parser() -> argparse.ArgumentParser:
     # Create colored description with ASCII art header
     description = f"""
 {Fore.CYAN}╔═══════════════════════════════════════════════════════════════════╗
-║                          PageReader v1.0.0                        ║
-║          Read web pages and browser tabs aloud with AI TTS        ║
+║                            vox v{config.APP_VERSION}                              ║
+║       Bidirectional audio-text conversion: TTS and STT            ║
 ╚═══════════════════════════════════════════════════════════════════╝{Style.RESET_ALL}
+
+{Fore.YELLOW}🎤 Speech-to-Text:{Style.RESET_ALL}
+  Record your voice and get accurate text transcription
+
+{Fore.YELLOW}🔊 Text-to-Speech:{Style.RESET_ALL}
+  Read web pages and browser tabs aloud with AI TTS
 
 {Fore.YELLOW}📚 Session Management:{Style.RESET_ALL}
   Save reading sessions and resume later from where you left off
@@ -153,39 +176,45 @@ def create_parser() -> argparse.ArgumentParser:
 📖 Examples:
 ═══════════════════════════════════════════════════════════════════{Style.RESET_ALL}
 
+  {Fore.GREEN}# Transcribe your voice to text{Style.RESET_ALL}
+  vox transcribe
+
+  {Fore.GREEN}# Save transcription to file{Style.RESET_ALL}
+  vox transcribe --output transcript.txt
+
   {Fore.GREEN}# Read from a URL{Style.RESET_ALL}
-  pagereader read --url https://example.com
+  vox read --url https://example.com
 
   {Fore.GREEN}# Save a reading session{Style.RESET_ALL}
-  pagereader read --url https://example.com --save-session my-article
+  vox read --url https://example.com --save-session my-article
 
   {Fore.GREEN}# List saved sessions{Style.RESET_ALL}
-  pagereader list-sessions
+  vox list-sessions
 
   {Fore.GREEN}# Resume a session{Style.RESET_ALL}
-  pagereader resume my-article
+  vox resume my-article
 
   {Fore.GREEN}# Read from a local file{Style.RESET_ALL}
-  pagereader read --file article.html
+  vox read --file article.html
 
   {Fore.GREEN}# Read with custom voice and speed{Style.RESET_ALL}
-  pagereader read --url https://example.com --voice en_US-libritts-high --speed 1.5
+  vox read --url https://example.com --voice en_US-libritts-high --speed 1.5
 
   {Fore.GREEN}# Save audio to file{Style.RESET_ALL}
-  pagereader read --url https://example.com --output audio.wav
+  vox read --url https://example.com --output audio.wav
 
   {Fore.GREEN}# List all open browser tabs{Style.RESET_ALL}
-  pagereader list tabs
+  vox list tabs
 
   {Fore.GREEN}# List available voices{Style.RESET_ALL}
-  pagereader list voices
+  vox list voices
 
 {Fore.CYAN}═══════════════════════════════════════════════════════════════════{Style.RESET_ALL}
-💡 For more help on a specific command: {Fore.YELLOW}pagereader <command> --help{Style.RESET_ALL}
+💡 For more help on a specific command: {Fore.YELLOW}vox <command> --help{Style.RESET_ALL}
 """
 
     parser = argparse.ArgumentParser(
-        prog="pagereader",
+        prog="vox",
         description=description,
         epilog=epilog,
         formatter_class=ColoredHelpFormatter,
@@ -232,6 +261,29 @@ def create_parser() -> argparse.ArgumentParser:
         "--save-session", metavar="NAME", help="Save this reading session with a name for later resume"
     )
 
+    # TRANSCRIBE command
+    transcribe_parser = subparsers.add_parser(
+        "transcribe",
+        help=f"{Fore.YELLOW}Transcribe voice to text{Style.RESET_ALL}",
+        description=f"{Fore.CYAN}Record your voice and convert it to text using speech-to-text{Style.RESET_ALL}",
+        formatter_class=ColoredHelpFormatter,
+    )
+    transcribe_parser.add_argument(
+        "--output",
+        metavar="FILE",
+        help="Save transcription to a file (default: print to stdout)",
+    )
+    transcribe_parser.add_argument(
+        "--model",
+        default=None,  # Will use saved default from config
+        help=f"Whisper model size: tiny, base, small, medium, large (default: saved preference or {config.DEFAULT_STT_MODEL})",
+    )
+    transcribe_parser.add_argument(
+        "--set-default-model",
+        action="store_true",
+        help="Save the specified --model as the new default for future transcriptions",
+    )
+
     # LIST command
     list_parser = subparsers.add_parser(
         "list",
@@ -276,8 +328,13 @@ def create_parser() -> argparse.ArgumentParser:
     # CONFIG command
     config_parser = subparsers.add_parser(
         "config",
-        help=f"{Fore.YELLOW}Show configuration{Style.RESET_ALL}",
+        help=f"{Fore.YELLOW}Show or manage configuration{Style.RESET_ALL}",
         formatter_class=ColoredHelpFormatter,
+    )
+    config_parser.add_argument(
+        "--show-stt",
+        action="store_true",
+        help="Show STT configuration settings",
     )
 
     return parser
@@ -440,11 +497,79 @@ def command_config(args):
     Args:
         args: Parsed command-line arguments
     """
-    print("\nPageReader Configuration:")
-    print(f"  TTS Provider: {config.DEFAULT_TTS_PROVIDER}")
-    print(f"  Default Voice: {config.DEFAULT_TTS_VOICE}")
-    print(f"  Default Speed: {config.DEFAULT_TTS_SPEED}")
-    print(f"  Cache Synthesis: {config.TTS_CACHE_ENABLED}")
+    if args.show_stt:
+        # Show STT configuration
+        user_config = config.load_user_config()
+        default_model = config.get_stt_default_model()
+
+        print(f"\n{Fore.CYAN}╔{'═' * 50}╗{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.GREEN}STT Configuration{Style.RESET_ALL}"
+            + " " * 32
+            + f"{Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(f"{Fore.CYAN}╠{'═' * 50}╣{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Default Model:{Style.RESET_ALL} {default_model:28s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Silence Duration:{Style.RESET_ALL} {config.SILENCE_DURATION}s{' ' * 26} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Sample Rate:{Style.RESET_ALL} {config.SAMPLE_RATE}Hz{' ' * 24} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Model Cache:{Style.RESET_ALL} {str(config.STT_MODEL_CACHE):24s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Config File:{Style.RESET_ALL} {str(config.USER_CONFIG_FILE):24s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(f"{Fore.CYAN}╠{'═' * 50}╣{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.YELLOW}Available Models:{Style.RESET_ALL}"
+            + " " * 30
+            + f"{Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        for model in config.VALID_STT_MODELS:
+            marker = "→" if model == default_model else " "
+            print(
+                f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.GREEN}{marker}{Style.RESET_ALL} {model:44s} {Fore.CYAN}║{Style.RESET_ALL}"
+            )
+        print(f"{Fore.CYAN}╚{'═' * 50}╝{Style.RESET_ALL}\n")
+
+        print(
+            f"{Fore.WHITE}💡 Tip:{Style.RESET_ALL} Set default model with: vox transcribe --model <name> --set-default-model\n"
+        )
+    else:
+        # Show general configuration
+        print(f"\n{Fore.CYAN}╔{'═' * 50}╗{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.GREEN}vox Configuration{Style.RESET_ALL}"
+            + " " * 30
+            + f"{Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(f"{Fore.CYAN}╠{'═' * 50}╣{Style.RESET_ALL}")
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}TTS Provider:{Style.RESET_ALL} {config.DEFAULT_TTS_PROVIDER:30s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Default Voice:{Style.RESET_ALL} {config.DEFAULT_TTS_VOICE:29s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Default Speed:{Style.RESET_ALL} {str(config.DEFAULT_TTS_SPEED):29s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Cache Enabled:{Style.RESET_ALL} {str(config.TTS_CACHE_ENABLED):29s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}STT Model:{Style.RESET_ALL} {config.get_stt_default_model():33s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(
+            f"{Fore.CYAN}║{Style.RESET_ALL} {Fore.WHITE}Config Directory:{Style.RESET_ALL} {str(config.USER_CONFIG_DIR):25s} {Fore.CYAN}║{Style.RESET_ALL}"
+        )
+        print(f"{Fore.CYAN}╚{'═' * 50}╝{Style.RESET_ALL}\n")
+
+        print(f"{Fore.WHITE}💡 Tip:{Style.RESET_ALL} Use --show-stt to see detailed STT configuration\n")
 
 
 def _get_content(args) -> str:
@@ -685,7 +810,7 @@ def command_list_sessions(args):
 
         if not sessions:
             print_warning("No saved sessions found")
-            print("\nTo save a session, use: pagereader read --url <URL> --save-session <NAME>")
+            print("\nTo save a session, use: vox read --url <URL> --save-session <NAME>")
             return
 
         print(f"\n{Fore.CYAN}📚 Saved Reading Sessions:{Style.RESET_ALL}\n")
@@ -716,7 +841,7 @@ def command_list_sessions(args):
             print()
 
         print(f"Total: {len(sessions)} session(s)")
-        print("\nTo resume a session, use: pagereader resume <session-name>")
+        print("\nTo resume a session, use: vox resume <session-name>")
 
     except Exception as e:
         print_error(f"Failed to list sessions: {e}")
@@ -791,6 +916,127 @@ def command_delete_session(args):
         sys.exit(1)
     except Exception as e:
         print_error(f"Failed to delete session: {e}")
+        sys.exit(1)
+
+
+def command_transcribe(args):
+    """Handle the 'transcribe' command.
+
+    Args:
+        args: Parsed command-line arguments
+    """
+    from pathlib import Path
+
+    from src.stt.transcriber import Transcriber
+    from src.stt.ui import format_device_list, format_error_box
+    from src.utils.errors import MicrophoneError, ModelLoadError, TranscriptionError
+
+    try:
+        # Handle --set-default-model flag
+        if args.set_default_model:
+            if not args.model:
+                print_error("--set-default-model requires --model to be specified")
+                sys.exit(1)
+
+            if config.set_stt_default_model(args.model):
+                print_success(f"Set default STT model to: {args.model}")
+            else:
+                print_error(f"Invalid model '{args.model}'. Valid options: {', '.join(config.VALID_STT_MODELS)}")
+                sys.exit(1)
+
+        # Initialize transcriber once (uses saved default if args.model is None)
+        if args.model:
+            print_status(f"Initializing speech-to-text with model: {args.model}")
+        else:
+            default_model = config.get_stt_default_model()
+            print_status(f"Initializing speech-to-text with default model: {default_model}")
+
+        transcriber = Transcriber(model_name=args.model)
+
+        # Loop to allow retries
+        while True:
+            try:
+                # Prepare output path if specified
+                output_path = Path(args.output) if args.output else None
+
+                # Run transcription
+                text = transcriber.transcribe(output_file=output_path)
+
+                print_success("Transcription complete!")
+
+                # Ask if user wants to record again
+                print()
+                response = input(f"{Fore.CYAN}?{Style.RESET_ALL} Record again? (y/N): ").strip().lower()
+
+                if response in ["y", "yes"]:
+                    print()  # Add blank line before next recording
+                    continue
+                elif response in ["", "n", "no"]:
+                    break
+                else:
+                    print_warning(f"Unknown response '{response}', exiting...")
+                    break
+
+            except KeyboardInterrupt:
+                print()
+                print_warning("Recording cancelled by user")
+                break
+
+    except MicrophoneError as e:
+        error_box = format_error_box(
+            error_type="Microphone Error",
+            message=e.message,
+            suggestions=[
+                "Check that a microphone is connected",
+                "Verify microphone permissions in Windows Settings (Privacy & security > Microphone)",
+                "Ensure no other application is using the microphone",
+            ],
+        )
+        print(f"\n{error_box}\n")
+        print(format_device_list())
+        logger.error(f"Microphone error: {e}")
+        sys.exit(1)
+
+    except ModelLoadError as e:
+        error_box = format_error_box(
+            error_type="Model Loading Error",
+            message=e.message,
+            suggestions=[
+                f"Check internet connection (first download of '{args.model or config.get_stt_default_model()}' model)",
+                f"Verify cache directory exists: {config.STT_MODEL_CACHE}",
+                "Try a smaller model: vox transcribe --model tiny",
+            ],
+        )
+        print(f"\n{error_box}\n")
+        logger.error(f"Model load error: {e}")
+        sys.exit(1)
+
+    except TranscriptionError as e:
+        error_box = format_error_box(
+            error_type="Transcription Error",
+            message=e.message,
+            suggestions=[
+                "Ensure you spoke clearly during recording",
+                "Check microphone input volume in Windows settings",
+                "Try recording again with less background noise",
+                "Try a larger model for better accuracy: vox transcribe --model large",
+            ],
+        )
+        print(f"\n{error_box}\n")
+        logger.error(f"Transcription error: {e}")
+        sys.exit(1)
+
+    except Exception as e:
+        error_box = format_error_box(
+            error_type="Unexpected Error",
+            message=str(e),
+            suggestions=[
+                "Check log files for details",
+                "Report this issue if it persists",
+            ],
+        )
+        print(f"\n{error_box}\n")
+        logger.exception("Unexpected error in transcribe command")
         sys.exit(1)
 
 

@@ -6,12 +6,22 @@ volume control, and speed adjustment using pygame.mixer.
 
 import io
 import logging
-import tempfile
+import os
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-import pygame
+# Suppress pygame welcome message
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+
+try:
+    # Suppress pkg_resources deprecation warning from pygame
+    warnings.filterwarnings("ignore", category=UserWarning, module="pygame.pkgdata")
+except Exception:
+    pass
+
+import pygame  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +98,7 @@ class AudioPlayback:
             # Block until playback completes
             while pygame.mixer.music.get_busy():
                 pygame.time.Clock().tick(10)  # Check 10 times per second
-            
+
             self.state.is_playing = False
             logger.info("Audio playback completed")
 
@@ -159,7 +169,7 @@ class AudioPlayback:
         """
         if position_ms < 0:
             raise ValueError(f"Position must be >= 0, got {position_ms}")
-        
+
         if not (self.state.is_playing or self.state.is_paused):
             raise RuntimeError("Cannot seek: no audio is playing")
 
@@ -186,7 +196,7 @@ class AudioPlayback:
                     self.state.current_position_ms = position_ms
             except pygame.error:
                 pass  # Keep last known position
-        
+
         return self.state.current_position_ms
 
     def set_speed(self, speed: float) -> None:
@@ -205,14 +215,13 @@ class AudioPlayback:
         """
         if not 0.5 <= speed <= 2.0:
             raise ValueError(f"Speed must be 0.5-2.0, got {speed}")
-        
+
         # pygame.mixer.music doesn't support runtime speed control
         # Speed must be set during synthesis, not during playback
         raise NotImplementedError(
             "Speed adjustment during playback is not supported. "
             "Use the --speed flag when starting playback to synthesize audio at the desired speed."
         )
-
 
     def is_playing(self) -> bool:
         """Check if audio is currently playing.

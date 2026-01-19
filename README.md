@@ -1,240 +1,376 @@
 <div align="center">
-  <img src="imgs/logo.png" alt="PageReader Logo" width="200" />
+  <img src="imgs/logo.png" alt="vox Logo" width="200" />
 </div>
 
-# PageReader
+# vox
 
-A Windows desktop application that reads any browser tab or webpage aloud using open-source neural text-to-speech.
+[![Python Version](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-3.0.0-orange.svg)](https://github.com/AidanInceer/vox/releases)
 
-## What It Does
+**Transform text to speech and speech to text—your voice-powered productivity tool for Windows**
 
-PageReader extracts text from browser tabs (Chrome, Edge, Firefox, etc.) or web URLs and reads it aloud using high-quality, offline TTS. No need to switch tabs or bring windows to the foreground.
+Previously known as *vox* (versions ≤2.0.0)
 
-**Key Features:**
-- 🎯 Read any browser tab without switching focus
-- 🌐 Supports Chrome, Edge, Firefox, Opera, Brave
-- 🔗 Read from URLs or local HTML files
-- 🎙️ Open-source Piper TTS (fully offline, no API keys)
-- 🎮 Interactive playback controls (pause/resume/seek with keyboard shortcuts)
-- 💾 Save and resume reading sessions with custom names
-- ⚡ Streaming text-to-speech with chunking for faster feedback (<3s to first audio)
+---
+
+## What is vox?
+
+**vox** is a Windows desktop application that bridges the gap between text and audio. Read web articles aloud using high-quality neural text-to-speech, or transcribe your voice to text with industry-leading speech recognition—all offline, no API keys required.
+
+**Perfect for:**
+- 📖 Listening to articles while multitasking
+- 🎙️ Capturing meeting notes by voice
+- ♿ Accessibility needs (screen reading, voice input)
+- 📝 Content creation and transcription
+- 🌍 Learning languages through audio
+
+**Core Features:**
+- **Text-to-Speech (TTS)**: Read any browser tab or web URL aloud
+  - 🎯 Read without switching windows
+  - 🌐 Chrome, Edge, Firefox, Opera, Brave support
+  - 🎮 Interactive playback controls (pause/resume/seek)
+  - 💾 Save and resume reading sessions
+  
+- **Speech-to-Text (STT)**: Transcribe your voice to text
+  - 🎤 High-accuracy voice transcription (95%+ for clear speech)
+  - 🔇 Auto-stop on silence (5 seconds)
+  - 💬 Instant terminal output or save to file
+  - 🔒 Fully offline (no cloud services)
+
+**All processing happens locally**—your voice and content never leave your machine
+
+
+---
 
 ## Installation
 
-### Option 1: Using pip
+### Requirements
+
+- **Windows 11**
+- **Python 3.13+** (not needed for standalone executable)
+
+### Option 1: Install from PyPI (Recommended)
 
 ```bash
-pip install pagereader
+pip install vox
 ```
 
-### Option 2: Using uv (recommended - faster)
+### Option 2: Install with uv (Faster)
 
 ```bash
 # Install uv first
 pip install uv
 
-# Install pagereader
-uv pip install pagereader
+# Install vox with uv
+uv pip install vox
 ```
 
 ### Option 3: Standalone Executable
 
-Download `pagereader.exe` from the [Releases](https://github.com/AidanInceer/PageReader/releases) page. No Python installation required.
+Download `vox.exe` from the [Releases](https://github.com/AidanInceer/vox/releases) page.  
+No Python installation required—just run the executable.
 
-### Requirements
+### Verify Installation
 
-- Windows 11
-- Python 3.13+ (not needed for standalone executable)
+```bash
+# Check version
+vox --version
+
+# Display help
+vox --help
+```
+
+---
 
 ## Usage
 
-### Basic Commands
+### Text-to-Speech: Read Web Content Aloud
+
+#### Read a Web Page
 
 ```bash
-# Read from a URL
-pagereader read --url https://example.com
+# Read from any URL
+vox read --url https://example.com/article
 
 # Read with custom voice and speed
-pagereader read --url https://example.com --voice en_US-libritts-high --speed 1.5
+vox read --url https://example.com --voice en_US-libritts-high --speed 1.5
 
 # Save audio to file instead of playing
-pagereader read --url https://example.com --output audio.wav
-
-# Read from a local HTML file
-pagereader read --file article.html
+vox read --url https://example.com --output article.wav
 ```
 
-### Session Management
-
-Save reading sessions and resume later from where you left off:
+#### Read Local HTML Files
 
 ```bash
-# Save a reading session with a custom name
-pagereader read --url https://example.com/long-article --save-session my-article
-
-# List all saved sessions
-pagereader list-sessions
-
-# Resume a saved session
-pagereader resume my-article
-
-# Delete a session
-pagereader delete-session my-article
+vox read --file article.html
 ```
 
-Session features:
-- 📝 Save with custom names (alphanumeric, hyphens, underscores)
-- 📊 View progress (character position and percentage complete)
-- ⏮️ Resume from exact position where you quit
-- 🗑️ Delete sessions you no longer need
-- 🔍 List all sessions with timestamps and URLs
+#### Read Active Browser Tab
 
-### Interactive Playback Controls
+```bash
+# Reads the currently focused tab (Chrome, Edge, Firefox, etc.)
+vox read --active-tab
+```
 
-During audio playback, use keyboard shortcuts to control playback:
+#### Interactive Playback Controls
+
+During playback, use these keyboard shortcuts:
 
 | Key | Action |
 |-----|--------|
 | `SPACE` | Pause/Resume playback |
 | `→` (Right Arrow) | Seek forward 5 seconds |
 | `←` (Left Arrow) | Seek backward 5 seconds |
-| `Q` | Quit playback gracefully |
+| `Q` | Quit playback |
 
-**Note**: Speed adjustment must be set before playback starts using the `--speed` flag (e.g., `--speed 1.5`). Runtime speed control during playback is not supported.
+**Note**: Speed adjustment (e.g., `--speed 1.5`) must be set before playback starts.
 
-### Streaming Playback Performance
+#### Session Management
 
-For longer articles (>200 words), PageReader uses intelligent chunking:
-- ✅ First audio chunk synthesized in <3 seconds
-- ✅ Background synthesis of remaining chunks while playing
-- ✅ Seamless transitions between chunks (<50ms gaps)
-- ✅ Memory-efficient buffering (max 10 chunks in memory)
+Save long reading sessions and resume later:
 
-Example with a 5,000-word article:
 ```bash
-pagereader read --url https://example.com/long-article
-# First audio starts playing within 3 seconds
-# Remaining chunks synthesize in background
+# Save a reading session
+vox read --url https://example.com/long-article --save-session my-article
+
+# List all saved sessions
+vox list-sessions
+
+# Resume a saved session (continues from where you left off)
+vox resume my-article
+
+# Delete a session
+vox delete-session my-article
 ```
 
-## Development
+**Session features:**
+- ⏮️ Resume from exact character position
+- 📊 View progress (percentage complete)
+- 📝 Custom session names (alphanumeric, hyphens, underscores)
+- 🔍 List all sessions with timestamps and URLs
 
-### Project Structure
+---
 
+### Speech-to-Text: Transcribe Your Voice
+
+#### Basic Transcription
+
+```bash
+# Start recording, speak, press Enter to stop
+vox transcribe
+# Transcription appears in terminal
 ```
-PageReader/
-├── src/                   # Source code
-│   ├── browser/           # Browser tab detection
-│   ├── extraction/        # Text extraction from HTML
-│   ├── tts/               # Text-to-speech synthesis
-│   ├── session/           # Session management
-│   └── ui/                # CLI interface
-├── tests/                 # Test suite
-└── pyproject.toml         # Dependencies and configuration
+
+#### Save Transcription to File
+
+```bash
+# Save to a text file
+vox transcribe --output meeting-notes.txt
 ```
 
-### Contributing
+#### Use Different Model Sizes
 
-1. Fork the repository
-2. Create a feature branch
-3. Write tests first (TDD approach)
-4. Implement your changes
-5. Run tests: `pytest tests/`
-6. Submit a pull request
+```bash
+# Faster but less accurate
+vox transcribe --model small
 
-See [CONSTITUTION.md](CONSTITUTION.md) for development standards.
+# Slower but more accurate (default)
+vox transcribe --model medium
 
-## License
+# Maximum accuracy
+vox transcribe --model large
+```
 
-MIT License - see LICENSE file for details.
+#### Recording Controls
 
-## Links
+- **Press Enter** to stop recording and start transcription
+- **Auto-stop**: Recording stops automatically after 5 seconds of silence
+- **Real-time feedback**: "Recording..." indicator shows when mic is active
 
-- **Repository**: https://github.com/AidanInceer/PageReader
-- **Issues**: https://github.com/AidanInceer/PageReader/issues
+**Model Sizes & Performance** (approximate times for 10-second audio):
 
-- [ ] Content summarization
-- [ ] Bookmark integration
-- [ ] Reading history
+| Model | Size | Speed | Accuracy |
+|-------|------|-------|----------|
+| `tiny` | 75 MB | ~1s | ~85% |
+| `small` | 488 MB | ~3s | ~93% |
+| `medium` (default) | 1.5 GB | ~4s | ~95% |
+| `large` | 3 GB | ~8s | ~97% |
 
-### v2.0 (Future)
-- [ ] macOS and Linux support
-- [ ] Web server mode for remote access
-- [ ] Mobile app companion
-- [ ] Voice profile customization
+---
+
+## Configuration
+
+### Config File Location
+
+Configuration is stored at:
+```
+%APPDATA%\vox\config.json
+```
+
+### Microphone Setup
+
+**Windows Microphone Permissions:**
+
+1. Open **Settings** → **Privacy & Security** → **Microphone**
+2. Enable "Let apps access your microphone"
+3. Verify your microphone is set as the **default device**:
+   - Right-click speaker icon in taskbar → **Sound settings**
+   - Under **Input**, select your preferred microphone
+   - Click **Test your microphone** to verify it works
+
+**vox uses the system default microphone**—configure it in Windows Sound settings before running `vox transcribe`.
+
+---
+
+## Troubleshooting
+
+### Speech-to-Text Issues
+
+#### "No microphone detected"
+
+**Problem**: System cannot find any audio input devices  
+**Solution**:
+1. Check physical microphone connection (USB or 3.5mm jack)
+2. Open **Device Manager** → **Audio inputs and outputs** → Verify microphone is listed and enabled
+3. Restart the application
+4. Try `vox transcribe` again
+
+#### "Microphone permission denied"
+
+**Problem**: Windows privacy settings block microphone access  
+**Solution**:
+1. Open **Settings** → **Privacy & Security** → **Microphone**
+2. Enable "Let apps access your microphone"
+3. Enable "Let desktop apps access your microphone"
+4. Restart terminal/application
+5. Run `vox transcribe` again
+
+#### "Microphone in use by another application"
+
+**Problem**: Another program (Zoom, Discord, etc.) is using the microphone  
+**Solution**:
+1. Close other applications using the microphone
+2. Check Windows Task Manager for background apps (Teams, OBS, etc.)
+3. Restart vox after closing conflicting apps
+
+#### "Low transcription accuracy"
+
+**Problem**: Transcription contains many errors or nonsense words  
+**Solutions**:
+1. **Reduce background noise**: Record in a quiet environment
+2. **Speak clearly**: Enunciate words, avoid mumbling
+3. **Check microphone quality**: Test with Windows Voice Recorder
+4. **Use a larger model**: `vox transcribe --model large` (slower but more accurate)
+5. **Adjust microphone position**: Speak 6-12 inches from mic
+6. **Increase microphone volume**: Windows Sound settings → Input device properties
+
+### Text-to-Speech Issues
+
+#### "TTS voice sounds robotic"
+
+**Problem**: Default voice lacks natural intonation  
+**Solution**:
+1. Try a different voice model: `vox read --url <url> --voice en_US-libritts-high`
+2. Adjust speed: `vox read --url <url> --speed 1.2` (slightly faster often sounds more natural)
+3. Check available voices: See [Piper TTS models](https://github.com/rhasspy/piper)
+
+### Installation Issues
+
+#### "Installation fails with dependency errors"
+
+**Problem**: pip cannot install required packages  
+**Solutions**:
+1. **Upgrade pip**: `pip install --upgrade pip`
+2. **Use uv**: `pip install uv && uv pip install vox` (faster, better resolver)
+3. **Check Python version**: `python --version` (must be 3.13+)
+4. **Install in virtual environment**:
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   pip install vox
+   ```
+
+---
+
+## Advanced Configuration
+
+### Customize TTS Settings (config.json)
+
+Example `%APPDATA%\vox\config.json`:
+
+```json
+{
+  "tts": {
+    "voice": "en_US-libritts-high",
+    "speed": 1.3,
+    "output_device": "default"
+  },
+  "stt": {
+    "model": "medium",
+    "language": "en",
+    "silence_duration": 5.0
+  }
+}
+```
+
+### STT Model Cache
+
+Downloaded Whisper models are cached at:
+```
+%APPDATA%\vox\models\
+```
+
+Delete this folder to re-download models or free up space (~1.5-3GB per model).
+
+---
 
 ## Contributing
 
-Contributions are welcome! Please follow the development workflow above and ensure:
-1. All new code is covered by tests (≥80% coverage required)
-2. Tests are written before implementation (Test-First Development)
-3. Code passes ruff linting checks
-4. All GitHub Actions checks pass on your PR
-5. **Follow Conventional Commits** for all commit messages (see below)
+Contributions are welcome! For detailed development guidelines, see [claude.md](claude.md).
 
-### Commit Message Policy
+**Quick checklist:**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Write tests first (TDD approach, ≥80% coverage required)
+4. Implement your changes
+5. Run tests: `pytest tests/`
+6. Run linting: `ruff check . && ruff format .`
+7. Submit a pull request
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) to ensure consistent, machine-readable commit history. All commits must follow this format:
+**Commit Message Policy**: Use [Conventional Commits](https://www.conventionalcommits.org/)
 
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-**Commit Types**:
-- `feat`: New feature for the user
-- `fix`: Bug fix for the user
-- `docs`: Documentation-only changes
-- `style`: Code style changes (formatting, missing semi-colons, etc.)
-- `refactor`: Code refactoring without changing behavior
-- `perf`: Performance improvements
-- `test`: Adding or modifying tests
-- `build`: Changes to build system or dependencies
-- `ci`: Changes to CI/CD configuration files
-- `chore`: Other changes that don't modify src or test files
-- `revert`: Reverts a previous commit
-
-**Examples**:
+Example:
 ```bash
-feat(tts): add speed adjustment controls
-fix(extraction): handle malformed HTML without crashing
+feat(stt): add support for Spanish transcription
+fix(tts): resolve playback crackling on fast speech
 docs(readme): update installation instructions
-test(browser): add unit tests for tab detection
 ```
 
-**Using Commitizen**:
-This project includes [Commitizen](https://commitizen-tools.github.io/commitizen/) to help you create properly formatted commits:
-
-```bash
-# Interactive commit (prompts you for type, scope, description, etc.)
-cz commit
-
-# Or use the shorthand
-cz c
-
-# Bump version and generate changelog (maintainers only)
-cz bump
-```
-
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
+---
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT License - See [LICENSE](LICENSE) file for details.
 
-## Support
+---
 
-For issues, questions, or feature requests, please open a GitHub issue or visit the project repository.
+## Credits
+
+**vox** is built with these outstanding open-source projects:
+
+- **[Piper TTS](https://github.com/rhasspy/piper)** - High-quality neural text-to-speech
+- **[Whisper](https://github.com/openai/whisper)** - State-of-the-art speech recognition by OpenAI
+- **[faster-whisper](https://github.com/guillaumekln/faster-whisper)** - Optimized Whisper implementation
+
+---
+
+## Links
+
+- **Repository**: https://github.com/AidanInceer/vox
+- **Issues**: https://github.com/AidanInceer/vox/issues
+- **Releases**: https://github.com/AidanInceer/vox/releases
 
 ---
 
 **Built with ❤️ using open-source technologies**
-
-This project is currently in the specification and design phase as part of the Speckit learning process. Check back for updates as development progresses.
-
-## License
-
-This is a personal learning project.
