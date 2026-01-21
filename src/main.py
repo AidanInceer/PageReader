@@ -89,7 +89,13 @@ class ColoredHelpFormatter(argparse.RawDescriptionHelpFormatter):
 
 
 def main():
-    """Main entry point for vox CLI."""
+    """Main entry point for vox.
+    
+    GUI-first behavior:
+    - No arguments: Launch GUI
+    - --cli flag: Run CLI commands
+    - Any CLI command directly: Run that command (backwards compatible)
+    """
     # Create default config file if it doesn't exist
     config.create_default_config()
 
@@ -105,6 +111,42 @@ def main():
         # Log but don't fail - migration is non-critical
         pass
 
+    # GUI-first: If no arguments, launch GUI
+    if len(sys.argv) == 1:
+        # No arguments - launch GUI
+        _launch_gui_default()
+        return
+
+    # Check if first argument is a known CLI command (backwards compatibility)
+    cli_commands = {"read", "transcribe", "list", "list-sessions", "resume", 
+                    "delete-session", "config", "gui"}
+    first_arg = sys.argv[1] if len(sys.argv) > 1 else ""
+    
+    # If first arg starts with - it's a flag, not a command
+    is_flag = first_arg.startswith("-")
+    is_cli_command = first_arg in cli_commands
+    
+    # If it's a CLI command or has --cli flag, run CLI mode
+    if is_cli_command or "--cli" in sys.argv:
+        _run_cli_mode()
+    else:
+        # Unknown command or flags only - show help or launch GUI
+        if is_flag and first_arg in ("-h", "--help", "-v", "--version"):
+            _run_cli_mode()  # Let parser handle help/version
+        else:
+            # Default to GUI for anything else
+            _launch_gui_default()
+
+
+def _launch_gui_default():
+    """Launch GUI in default mode."""
+    class Args:
+        minimized = False
+    command_gui(Args())
+
+
+def _run_cli_mode():
+    """Run CLI mode - parse arguments and dispatch to commands."""
     parser = create_parser()
     args = parser.parse_args()
 

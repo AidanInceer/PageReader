@@ -33,6 +33,7 @@ from src.ui.styles import (
     WINDOW_SIZE,
     configure_styles,
 )
+from src.ui.system_tray import SystemTrayManager
 from src.voice_input.controller import VoiceInputController
 
 try:
@@ -96,6 +97,12 @@ class VoxMainWindow:
         self._on_close_callback = on_close_callback
         self._indicator: Optional[RecordingIndicator] = None
         self._is_minimized_to_tray = False
+        self._system_tray: Optional[SystemTrayManager] = None
+        
+        # Tray behavior: True = minimize to tray on close, False = exit
+        self._minimize_to_tray_on_close = database.get_setting(
+            "minimize_to_tray", True
+        )
 
         # Hotkey capture state
         self._is_capturing_hotkey = False
@@ -124,13 +131,16 @@ class VoxMainWindow:
 
         # Wire up controller state changes to indicator
         self._setup_indicator()
+        
+        # Setup system tray
+        self._setup_system_tray()
 
         logger.info("VoxMainWindow initialized")
 
     def _build_ui(self) -> None:
         """Build the main window UI components."""
-        # Create notebook (tabbed interface)
-        self._notebook = ttk.Notebook(self._root, bootstyle="dark")
+        # Create notebook (tabbed interface) - default style for light theme
+        self._notebook = ttk.Notebook(self._root)
         self._notebook.pack(fill=BOTH, expand=True, padx=PADDING["medium"], pady=PADDING["medium"])
 
         # Create tabs
@@ -150,8 +160,8 @@ class VoxMainWindow:
         title_label = ttk.Label(
             frame,
             text="Vox Voice Input",
-            font=("Segoe UI", 18, "bold"),
-            bootstyle="inverse-primary",
+            font=("Segoe UI Variable", 18, "bold"),
+            bootstyle="primary",
         )
         title_label.pack(pady=(0, PADDING["large"]))
 
@@ -364,6 +374,30 @@ class VoxMainWindow:
 
         # Also update the controller's indicator reference
         self._controller._indicator = self._indicator
+
+    def _setup_system_tray(self) -> None:
+        """Set up the system tray icon and menu."""
+        self._system_tray = SystemTrayManager(
+            on_show=self._on_tray_show,
+            on_hide=self._on_tray_hide,
+            on_exit=self._on_tray_exit,
+        )
+        self._system_tray.start()
+        logger.info("System tray initialized")
+
+    def _on_tray_show(self) -> None:
+        """Handle Show action from system tray."""
+        self._root.after(0, self.show)
+
+    def _on_tray_hide(self) -> None:
+        """Handle Hide action from system tray."""
+        self._root.after(0, self.hide)
+
+    def _on_tray_exit(self) -> None:
+        """Handle Exit action from system tray."""
+        # Force exit (bypass minimize to tray)
+        self._minimize_to_tray_on_close = False
+        self._root.after(0, self.on_close)
 
     def _show_error_toast(self, message: str) -> None:
         """Show an error toast notification.
@@ -773,14 +807,29 @@ class VoxMainWindow:
     def on_close(self) -> None:
         """Handle window close event.
 
-        Performs cleanup operations including:
+        If minimize_to_tray_on_close is True, hides the window instead
+        of closing. Otherwise performs cleanup and exits.
+
+        Cleanup operations include:
         - Stopping any active hotkey capture
         - Stopping the voice input controller
         - Destroying the recording indicator
+        - Stopping the system tray
         - Invoking the optional close callback
         - Destroying the main window
         """
         logger.info("Window close requested")
+        
+        # Check if we should minimize to tray instead of closing
+        if self._minimize_to_tray_on_close and not self._is_minimized_to_tray:
+            logger.info("Minimizing to system tray")
+            self.hide()
+            if self._system_tray:
+                self._system_tray.show_notification(
+                    "Vox", 
+                    "Application minimized to tray. Use hotkey or tray icon to restore."
+                )
+            return
 
         # Stop hotkey capture if active
         if self._is_capturing_hotkey:
@@ -792,6 +841,10 @@ class VoxMainWindow:
         # Destroy the indicator
         if self._indicator:
             self._indicator.destroy()
+        
+        # Stop system tray
+        if self._system_tray:
+            self._system_tray.stop()
 
         # Call user callback if provided
         if self._on_close_callback:
