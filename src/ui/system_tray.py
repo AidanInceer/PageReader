@@ -15,13 +15,13 @@ from PIL import Image
 
 class SystemTrayManager:
     """Manages the system tray icon for Vox application.
-    
+
     Provides:
     - Tray icon with Vox branding
     - Right-click menu with Show/Hide/Exit options
     - Minimize to tray on window close
     - Restore from tray on click/menu action
-    
+
     Attributes:
         _icon: The pystray Icon instance.
         _on_show: Callback when user clicks Show.
@@ -37,7 +37,7 @@ class SystemTrayManager:
         on_exit: Optional[Callable[[], None]] = None,
     ) -> None:
         """Initialize the system tray manager.
-        
+
         Args:
             on_show: Callback when Show is selected from tray menu.
             on_hide: Callback when Hide is selected from tray menu.
@@ -52,7 +52,7 @@ class SystemTrayManager:
 
     def create_icon(self) -> pystray.Icon:
         """Create and return the pystray Icon.
-        
+
         Returns:
             Configured pystray.Icon instance.
         """
@@ -70,7 +70,7 @@ class SystemTrayManager:
 
     def create_menu(self) -> pystray.Menu:
         """Create the tray menu with Show/Hide/Exit options.
-        
+
         Returns:
             pystray.Menu with configured menu items.
         """
@@ -107,7 +107,7 @@ class SystemTrayManager:
 
     def update_menu_state(self, is_visible: bool) -> None:
         """Update the tray menu based on window visibility.
-        
+
         Args:
             is_visible: Whether the main window is currently visible.
         """
@@ -115,7 +115,7 @@ class SystemTrayManager:
 
     def show_notification(self, title: str, message: str) -> None:
         """Show a system notification from the tray.
-        
+
         Args:
             title: Notification title.
             message: Notification message.
@@ -130,7 +130,7 @@ class SystemTrayManager:
 
     def _load_icon_image(self) -> Image.Image:
         """Load the tray icon image.
-        
+
         Returns:
             PIL Image for the tray icon.
         """
@@ -150,7 +150,7 @@ class SystemTrayManager:
 
     def _create_fallback_icon(self) -> Image.Image:
         """Create a simple fallback icon if no icon file exists.
-        
+
         Returns:
             PIL Image with a simple Vox icon.
         """
@@ -179,7 +179,7 @@ class SystemTrayManager:
 
     def _handle_show(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
         """Handle Show menu item click.
-        
+
         Args:
             icon: The pystray Icon instance.
             item: The clicked menu item.
@@ -190,7 +190,7 @@ class SystemTrayManager:
 
     def _handle_hide(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
         """Handle Hide menu item click.
-        
+
         Args:
             icon: The pystray Icon instance.
             item: The clicked menu item.
@@ -201,7 +201,7 @@ class SystemTrayManager:
 
     def _handle_exit(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
         """Handle Exit menu item click.
-        
+
         Args:
             icon: The pystray Icon instance.
             item: The clicked menu item.

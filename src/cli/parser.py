@@ -21,7 +21,7 @@ CLI_COMMANDS: Final[set[str]] = {
 
 def create_parser() -> argparse.ArgumentParser:
     """Create and configure the argument parser for Vox CLI.
-    
+
     Returns:
         Configured ArgumentParser with all subcommands.
     """
@@ -90,10 +90,10 @@ def create_parser() -> argparse.ArgumentParser:
 
 def parse_args(args: list[str] | None = None) -> argparse.Namespace:
     """Parse command line arguments.
-    
+
     Args:
         args: List of arguments to parse. If None, uses sys.argv.
-        
+
     Returns:
         Parsed arguments namespace.
     """

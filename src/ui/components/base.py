@@ -12,7 +12,7 @@ import ttkbootstrap as ttk
 @runtime_checkable
 class TabComponent(Protocol):
     """Protocol defining the interface for tab components.
-    
+
     All tab components (StatusTab, SettingsTab, HistoryTab) must implement
     this protocol to ensure consistent integration with the main window.
     """
@@ -20,7 +20,7 @@ class TabComponent(Protocol):
     @property
     def frame(self) -> ttk.Frame:
         """Get the root frame of this tab component.
-        
+
         Returns:
             The ttk.Frame that contains this tab's UI elements.
         """
@@ -28,7 +28,7 @@ class TabComponent(Protocol):
 
     def on_action(self, action: str, data: dict[str, Any] | None = None) -> None:
         """Handle an action from the parent or other components.
-        
+
         Args:
             action: The action identifier (e.g., "refresh", "reset").
             data: Optional data associated with the action.
@@ -47,10 +47,10 @@ Action callbacks receive:
 
 class BaseTabComponent:
     """Base implementation for tab components.
-    
+
     Provides common functionality for tab components. Subclasses
     should override _build() to create their specific UI.
-    
+
     Attributes:
         _parent: The parent widget.
         _on_action: Optional callback for emitting actions to parent.
@@ -63,7 +63,7 @@ class BaseTabComponent:
         on_action: ActionCallback | None = None
     ) -> None:
         """Initialize the tab component.
-        
+
         Args:
             parent: The parent widget to attach to.
             on_action: Optional callback for emitting actions.
@@ -79,9 +79,9 @@ class BaseTabComponent:
 
     def _build(self) -> ttk.Frame:
         """Build and return the component's UI.
-        
+
         Subclasses must override this method.
-        
+
         Returns:
             The root frame containing the component's UI.
         """
@@ -89,9 +89,9 @@ class BaseTabComponent:
 
     def on_action(self, action: str, data: dict[str, Any] | None = None) -> None:
         """Handle an action from parent or emit to parent.
-        
+
         Override in subclasses to handle specific actions.
-        
+
         Args:
             action: The action identifier.
             data: Optional action data.
@@ -100,7 +100,7 @@ class BaseTabComponent:
 
     def emit_action(self, action: str, data: dict[str, Any] | None = None) -> None:
         """Emit an action to the parent component.
-        
+
         Args:
             action: The action identifier.
             data: Optional action data.

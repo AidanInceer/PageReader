@@ -84,10 +84,10 @@ class RecordingIndicator:
 
     def set_main_root(self, root: tk.Tk) -> None:
         """Set reference to main application's root window for thread-safe scheduling.
-        
+
         This allows the indicator to schedule operations on the main thread's
         event loop even when called from background threads.
-        
+
         Args:
             root: Main application's tkinter root window
         """
@@ -96,11 +96,11 @@ class RecordingIndicator:
 
     def _schedule_on_main_thread(self, func: callable) -> None:
         """Schedule a function to run on the main thread.
-        
+
         If already on the main thread, executes immediately.
         Otherwise, schedules via after() using either the main app root
         or the indicator's own root.
-        
+
         Args:
             func: Function to execute on main thread
         """

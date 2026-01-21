@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     """Main entry point for vox.
-    
+
     Directly launches the speech-to-text GUI.
     """
     # Create default config file if it doesn't exist

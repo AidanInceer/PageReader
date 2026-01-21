@@ -14,11 +14,11 @@ class ValidationMixin:
 
     def validate_not_empty(self, value: str, field_name: str) -> bool:
         """Validate that a string value is not empty.
-        
+
         Args:
             value: The string to validate.
             field_name: Name of the field for error messages.
-            
+
         Returns:
             True if valid, False otherwise.
         """
@@ -35,13 +35,13 @@ class ValidationMixin:
         field_name: str
     ) -> bool:
         """Validate that a numeric value is within range.
-        
+
         Args:
             value: The number to validate.
             min_val: Minimum allowed value (inclusive).
             max_val: Maximum allowed value (inclusive).
             field_name: Name of the field for error messages.
-            
+
         Returns:
             True if valid, False otherwise.
         """
@@ -54,9 +54,9 @@ class ValidationMixin:
 
     def _show_validation_error(self, message: str) -> None:
         """Show a validation error to the user.
-        
+
         Override this method in subclasses to customize error display.
-        
+
         Args:
             message: The error message to display.
         """
@@ -72,7 +72,7 @@ class StateMixin:
 
     def init_state(self, initial_state: dict[str, Any] | None = None) -> None:
         """Initialize the component state.
-        
+
         Args:
             initial_state: Optional initial state dictionary.
         """
@@ -81,11 +81,11 @@ class StateMixin:
 
     def get_state(self, key: str, default: T = None) -> T:
         """Get a state value.
-        
+
         Args:
             key: The state key.
             default: Default value if key doesn't exist.
-            
+
         Returns:
             The state value or default.
         """
@@ -93,7 +93,7 @@ class StateMixin:
 
     def set_state(self, key: str, value: Any) -> None:
         """Set a state value and notify listeners.
-        
+
         Args:
             key: The state key.
             value: The new value.
@@ -107,7 +107,7 @@ class StateMixin:
 
     def on_state_change(self, key: str, listener: Callable[[Any], None]) -> None:
         """Register a listener for state changes.
-        
+
         Args:
             key: The state key to listen for.
             listener: Callback function receiving the new value.
@@ -119,9 +119,9 @@ class StateMixin:
 
 class BaseComponent(ValidationMixin, StateMixin):
     """Base mixin combining validation and state management.
-    
+
     UI components can inherit from this to get common functionality.
-    
+
     Example:
         class MyTab(BaseComponent):
             def __init__(self, parent):
