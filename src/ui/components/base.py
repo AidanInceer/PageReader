@@ -16,7 +16,7 @@ class TabComponent(Protocol):
     All tab components (StatusTab, SettingsTab, HistoryTab) must implement
     this protocol to ensure consistent integration with the main window.
     """
-    
+
     @property
     def frame(self) -> ttk.Frame:
         """Get the root frame of this tab component.
@@ -25,7 +25,7 @@ class TabComponent(Protocol):
             The ttk.Frame that contains this tab's UI elements.
         """
         ...
-    
+
     def on_action(self, action: str, data: dict[str, Any] | None = None) -> None:
         """Handle an action from the parent or other components.
         
@@ -56,7 +56,7 @@ class BaseTabComponent:
         _on_action: Optional callback for emitting actions to parent.
         _frame: The root frame of this component.
     """
-    
+
     def __init__(
         self,
         parent: ttk.Frame,
@@ -71,12 +71,12 @@ class BaseTabComponent:
         self._parent = parent
         self._on_action = on_action
         self._frame = self._build()
-    
+
     @property
     def frame(self) -> ttk.Frame:
         """Get the root frame of this tab component."""
         return self._frame
-    
+
     def _build(self) -> ttk.Frame:
         """Build and return the component's UI.
         
@@ -86,7 +86,7 @@ class BaseTabComponent:
             The root frame containing the component's UI.
         """
         raise NotImplementedError("Subclasses must implement _build()")
-    
+
     def on_action(self, action: str, data: dict[str, Any] | None = None) -> None:
         """Handle an action from parent or emit to parent.
         
@@ -97,7 +97,7 @@ class BaseTabComponent:
             data: Optional action data.
         """
         pass
-    
+
     def emit_action(self, action: str, data: dict[str, Any] | None = None) -> None:
         """Emit an action to the parent component.
         

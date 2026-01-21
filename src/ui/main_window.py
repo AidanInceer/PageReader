@@ -98,7 +98,7 @@ class VoxMainWindow:
         self._indicator: Optional[RecordingIndicator] = None
         self._is_minimized_to_tray = False
         self._system_tray: Optional[SystemTrayManager] = None
-        
+
         # Tray behavior: True = minimize to tray on close, False = exit
         self._minimize_to_tray_on_close = database.get_setting(
             "minimize_to_tray", True
@@ -131,7 +131,7 @@ class VoxMainWindow:
 
         # Wire up controller state changes to indicator
         self._setup_indicator()
-        
+
         # Setup system tray
         self._setup_system_tray()
 
@@ -351,7 +351,7 @@ class VoxMainWindow:
     def _setup_indicator(self) -> None:
         """Set up the recording indicator and wire to controller."""
         self._indicator = RecordingIndicator()
-        
+
         # Pass main window's root for thread-safe scheduling
         self._indicator.set_main_root(self._root)
 
@@ -819,14 +819,14 @@ class VoxMainWindow:
         - Destroying the main window
         """
         logger.info("Window close requested")
-        
+
         # Check if we should minimize to tray instead of closing
         if self._minimize_to_tray_on_close and not self._is_minimized_to_tray:
             logger.info("Minimizing to system tray")
             self.hide()
             if self._system_tray:
                 self._system_tray.show_notification(
-                    "Vox", 
+                    "Vox",
                     "Application minimized to tray. Use hotkey or tray icon to restore."
                 )
             return
@@ -841,7 +841,7 @@ class VoxMainWindow:
         # Destroy the indicator
         if self._indicator:
             self._indicator.destroy()
-        
+
         # Stop system tray
         if self._system_tray:
             self._system_tray.stop()

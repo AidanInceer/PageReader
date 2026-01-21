@@ -112,18 +112,18 @@ def configure_styles(style: ttk.Style) -> None:
         font=FONTS["mono"],
         foreground=COLORS["primary"],
     )
-    
+
     # Light theme status styles
     style.configure(
         "Success.TLabel",
         foreground=COLORS["success"],
     )
-    
+
     style.configure(
-        "Danger.TLabel", 
+        "Danger.TLabel",
         foreground=COLORS["danger"],
     )
-    
+
     style.configure(
         "Primary.TLabel",
         foreground=COLORS["primary"],

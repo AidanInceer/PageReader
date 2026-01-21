@@ -45,7 +45,7 @@ def safe_rmtree(path, max_retries=3):
             else:
                 print(f"[ERROR] Could not delete {path}")
                 print(f"[ERROR] {e}")
-                print(f"[!] Please close any running instances of vox.exe and try again")
+                print("[!] Please close any running instances of vox.exe and try again")
                 return False
         except Exception as e:
             print(f"[ERROR] Unexpected error removing {path}: {e}")
