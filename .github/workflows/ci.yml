@@ -184,21 +184,23 @@ jobs:
             echo "SKIP_BUMP=false" >> $GITHUB_ENV
           fi
 
-      - name: Create initial tag (first time only)
-        if: env.SKIP_BUMP == 'false' && steps.check_tags.outputs.has_tags == 'false'
+      - name: Bump version (auto - first time without changelog)
+        if: env.SKIP_BUMP == 'false' && steps.check_tags.outputs.has_tags == 'false' && (github.event_name == 'push' || github.event.inputs.bump_type == 'auto')
         run: |
-          CURRENT_VERSION=$(cz version -p)
-          echo "Creating initial tag v$CURRENT_VERSION"
-          git tag -a "v$CURRENT_VERSION" -m "Initial release v$CURRENT_VERSION"
-          git push origin "v$CURRENT_VERSION"
+          cz bump --yes
 
-      - name: Bump version (auto)
-        if: env.SKIP_BUMP == 'false' && (github.event_name == 'push' || github.event.inputs.bump_type == 'auto')
+      - name: Bump version (auto - with changelog)
+        if: env.SKIP_BUMP == 'false' && steps.check_tags.outputs.has_tags == 'true' && (github.event_name == 'push' || github.event.inputs.bump_type == 'auto')
         run: |
           cz bump --yes --changelog
 
-      - name: Bump version (manual)
-        if: env.SKIP_BUMP == 'false' && github.event.inputs.bump_type != 'auto' && github.event_name == 'workflow_dispatch'
+      - name: Bump version (manual - first time without changelog)
+        if: env.SKIP_BUMP == 'false' && steps.check_tags.outputs.has_tags == 'false' && github.event.inputs.bump_type != 'auto' && github.event_name == 'workflow_dispatch'
+        run: |
+          cz bump --increment ${{ github.event.inputs.bump_type }} --yes
+
+      - name: Bump version (manual - with changelog)
+        if: env.SKIP_BUMP == 'false' && steps.check_tags.outputs.has_tags == 'true' && github.event.inputs.bump_type != 'auto' && github.event_name == 'workflow_dispatch'
         run: |
           cz bump --increment ${{ github.event.inputs.bump_type }} --yes --changelog
 
