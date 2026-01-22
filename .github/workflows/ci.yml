@@ -159,6 +159,17 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
+      - name: Check for existing tags
+        id: check_tags
+        run: |
+          if git describe --tags --abbrev=0 2>/dev/null; then
+            echo "has_tags=true" >> $GITHUB_OUTPUT
+            echo "Tags found"
+          else
+            echo "has_tags=false" >> $GITHUB_OUTPUT
+            echo "No tags found - will create initial tag"
+          fi
+
       - name: Check for version bump
         run: |
           echo "Checking if version bump is needed..."
@@ -173,13 +184,23 @@ jobs:
             echo "SKIP_BUMP=false" >> $GITHUB_ENV
           fi
 
+      - name: Create initial tag (first time only)
+        if: env.SKIP_BUMP == 'false' && steps.check_tags.outputs.has_tags == 'false'
+        run: |
+          CURRENT_VERSION=$(cz version -p)
+          echo "Creating initial tag v$CURRENT_VERSION"
+          git tag -a "v$CURRENT_VERSION" -m "Initial release v$CURRENT_VERSION"
+          git push origin "v$CURRENT_VERSION"
+
       - name: Bump version (auto)
         if: env.SKIP_BUMP == 'false' && (github.event_name == 'push' || github.event.inputs.bump_type == 'auto')
-        run: cz bump --yes --changelog || cz bump --yes
+        run: |
+          cz bump --yes --changelog
 
       - name: Bump version (manual)
-        if: github.event.inputs.bump_type != 'auto' && github.event_name == 'workflow_dispatch'
-        run: cz bump --increment ${{ github.event.inputs.bump_type }} --yes --changelog || cz bump --increment ${{ github.event.inputs.bump_type }} --yes
+        if: env.SKIP_BUMP == 'false' && github.event.inputs.bump_type != 'auto' && github.event_name == 'workflow_dispatch'
+        run: |
+          cz bump --increment ${{ github.event.inputs.bump_type }} --yes --changelog
 
       - name: Get new version
         id: version
