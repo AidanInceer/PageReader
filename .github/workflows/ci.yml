@@ -146,6 +146,18 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Fetch all tags
+        run: git fetch --tags --force
+
+      - name: Debug git state
+        run: |
+          echo "=== Git tags ==="
+          git tag -l
+          echo "=== Git describe ==="
+          git describe --tags --abbrev=0 || echo "No tags found"
+          echo "=== Current version in pyproject.toml ==="
+          grep 'version = ' pyproject.toml | head -1
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -162,9 +174,13 @@ jobs:
       - name: Check for existing tags
         id: check_tags
         run: |
-          if git describe --tags --abbrev=0 2>/dev/null; then
+          TAG_COUNT=$(git tag -l | wc -l)
+          echo "Found $TAG_COUNT tags"
+          if [ "$TAG_COUNT" -gt 0 ]; then
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            echo "Latest tag: $LATEST_TAG"
             echo "has_tags=true" >> $GITHUB_OUTPUT
-            echo "Tags found"
+            echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           else
             echo "has_tags=false" >> $GITHUB_OUTPUT
             echo "No tags found - will create initial tag"
