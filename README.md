@@ -28,27 +28,27 @@ Vox is a lightweight desktop application that transcribes speech to text using O
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| 🎙️ **Global Hotkey** | Trigger from any application |
-| 📋 **Auto-paste** | Transcribed text inserts at cursor |
-| 🔒 **Offline** | No cloud, no API keys, no tracking |
-| ⚡ **Lightweight** | Minimal resource usage |
+| Feature              | Description                        |
+| -------------------- | ---------------------------------- |
+| 🎙️ **Global Hotkey** | Trigger from any application       |
+| 📋 **Auto-paste**    | Transcribed text inserts at cursor |
+| 🔒 **Offline**       | No cloud, no API keys, no tracking |
+| ⚡ **Lightweight**   | Minimal resource usage             |
 
 ## Requirements
 
-| | Specification |
-|---|---------------|
-| **OS** | Windows 10/11 |
-| **RAM** | 8GB recommended |
-| **Disk** | 500MB free |
+|          | Specification   |
+| -------- | --------------- |
+| **OS**   | Windows 10/11   |
+| **RAM**  | 8GB recommended |
+| **Disk** | 500MB free      |
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
+| Shortcut         | Action               |
+| ---------------- | -------------------- |
 | `Ctrl+Alt+Space` | Start/stop recording |
-| `Esc` | Cancel recording |
+| `Esc`            | Cancel recording     |
 
 > 💡 Hotkeys can be customized in Settings
 
