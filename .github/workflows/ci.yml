@@ -92,8 +92,7 @@ jobs:
     needs: [test]
     if: |
       success() &&
-      github.ref == 'refs/heads/main' &&
-      !startsWith(github.event.head_commit.message, 'bump:')
+      github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code
@@ -140,7 +139,6 @@ jobs:
     if: |
       success() &&
       github.ref == 'refs/heads/main' &&
-      !startsWith(github.event.head_commit.message, 'bump:') &&
       !contains(github.event.head_commit.message, '[skip ci]') &&
       !contains(github.event.head_commit.message, '[skip bump]')
 
@@ -183,15 +181,14 @@ jobs:
             echo "No version bump needed"
           fi
 
-  # Step 5: Build release EXE (only when merging to main, triggered by bump commit)
+  # Step 5: Build release EXE (only when merging to main)
   build-release-exe:
     name: Build Release EXE
     runs-on: windows-latest
-    needs: [test]
+    needs: [version-bump]
     if: |
       success() &&
-      github.ref == 'refs/heads/main' &&
-      startsWith(github.event.head_commit.message, 'bump:')
+      github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code
@@ -199,15 +196,6 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-
-      - name: Extract version from commit
-        id: version
-        run: |
-          # Extract version from commit message like "bump: version 3.1.0 → 3.2.0"
-          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP '→ \K[0-9]+\.[0-9]+\.[0-9]+' || echo "")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Detected version: $VERSION"
-        shell: bash
 
       - name: Pull latest changes
         run: git pull origin main
@@ -243,15 +231,14 @@ jobs:
           name: vox-release-exe
           path: dist/vox.exe
 
-  # Step 6: Create GitHub Release (only when merging to main, triggered by bump commit)
+  # Step 6: Create GitHub Release (only when merging to main)
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: [build-release-exe]
     if: |
       success() &&
-      github.ref == 'refs/heads/main' &&
-      startsWith(github.event.head_commit.message, 'bump:')
+      github.ref == 'refs/heads/main'
 
     permissions:
       contents: write
