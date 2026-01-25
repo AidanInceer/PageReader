@@ -160,6 +160,9 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
+      - name: Fetch all tags
+        run: git fetch --tags --force
+
       - name: Bump version and create changelog
         id: cz
         uses: commitizen-tools/commitizen-action@master
